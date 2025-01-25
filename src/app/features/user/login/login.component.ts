@@ -1,0 +1,99 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import Swal from 'sweetalert2';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+})
+export class LoginComponent implements OnInit {
+  loginForm!: FormGroup;
+  token!: string
+
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
+
+    // prevent navigate login page after loggined
+    if(this.authService.isLoggedIn()){
+      this.router.navigate(['/dashboard'])
+    }
+  }
+
+  onLoginSubmit() {
+    if (this.loginForm.valid) {
+      console.log('login form', this.loginForm.value);
+      const { email, password } = this.loginForm.value;
+      this.authService.login(email, password).subscribe({
+        next: (res: any) => {
+          if (res) {
+            localStorage.setItem('isLoggedIn', 'true')
+            this.router.navigate(['/dashboard']);
+            Swal.fire({
+              icon: 'success',
+              title: res.message || 'Login Successfull!',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: 'rgb(8, 10, 24)',
+              color: 'white',
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Login failed',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: 'rgb(8, 10, 24)',
+              color: 'white',
+            });
+          }
+        },
+        error: (error) => {
+          console.log('Error during login', error);
+          const errorMessage = error.error?.message || 'Login Failed';
+          Swal.fire({
+            icon: 'error',
+            title: errorMessage,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        },
+      });
+    } else {
+      console.log('no find email');
+      this.loginForm.markAllAsTouched();
+    }
+  }
+}
