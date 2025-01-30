@@ -7,25 +7,27 @@ import { NotfoundComponent } from './shared/components/notfound/notfound.compone
 import { authGuard } from './core/guards/auth.guard';
 import { ProfileComponent } from './features/user/profile/profile.component';
 import { UserComponent } from './features/user/user/user.component';
+import { NotificationComponent } from './features/user/notification/notification.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/user/login', pathMatch: 'full' },
   {
     path: 'user',
-    component: UserComponent, // Assuming you have a UserComponent to act as a layout
+    component: UserComponent,
     children: [
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
+      { path: 'otp-verify/:email', component: OtpComponent },
       {
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [authGuard],
       },
-      { path: 'otp-verify/:email', component: OtpComponent },
-      { path: 'profile', component: ProfileComponent },
-      { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirect to login by default
+      {path:'profile', loadComponent: () => import('./features/user/profile/profile.component').then((c)=> c.ProfileComponent)},
+      {path: 'notification', loadComponent: () => import('./features/user/notification/notification.component').then((c) => c.NotificationComponent)},
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
 
-  { path: '**', component: NotfoundComponent }, // Catch-all for 404
+  { path: '**', component: NotfoundComponent },
 ];
