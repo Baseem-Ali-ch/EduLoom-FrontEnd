@@ -161,7 +161,7 @@ export class ProfileComponent implements OnInit {
   sendInstructorDetails(instructorDetails: any) {
     this.profileService.becomeInstructor(instructorDetails).subscribe({
       next: (response: any) => {
-        this.closeModal();
+        this.closeInstructorReqModal();
         if (response) {
           Swal.fire({
             icon: 'success',
@@ -177,7 +177,7 @@ export class ProfileComponent implements OnInit {
         } else {
           Swal.fire({
             icon: 'error',
-            title: 'Faile to send request',
+            title: 'Failed to send request',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -188,10 +188,10 @@ export class ProfileComponent implements OnInit {
           });
         }
       },
-      error: (error: Error) => {
+      error: (error) => {
         Swal.fire({
           icon: 'error',
-          title: 'Faile to send request',
+          title: error.error?.message || 'Faile to send request',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,

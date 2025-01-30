@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/IUser';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { InstructorRequest } from '../models/Instructor';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +59,7 @@ export class ProfileService {
   }
 
   // send request to become instructor
-  becomeInstructor(instructorData: User): Observable<any> {
+  becomeInstructor(instructorData: InstructorRequest): Observable<any> {
     const token = this.getToken();
     return this.http.post(`${this.apiUrl}/user/instructor-request`, instructorData, {
       headers: {
