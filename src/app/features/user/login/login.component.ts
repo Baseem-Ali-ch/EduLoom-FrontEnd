@@ -10,6 +10,8 @@ import { Store } from '@ngrx/store';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import Swal from 'sweetalert2';
+import { selectIsLoading } from '../../../state/user/user.selector';
+import { AppState } from '../../../state/user/user.state';
 
 @Component({
   selector: 'app-login',
@@ -21,15 +23,20 @@ import Swal from 'sweetalert2';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   token!: string
+  isLoading: boolean = false
 
   constructor(
     private fb: FormBuilder,
-    private store: Store,
+    private store: Store<AppState>,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) {
+    // select the loading state
+        this.store.select(selectIsLoading).subscribe(isLoading => this.isLoading = isLoading);
+  }
 
   ngOnInit(): void {
+    // login form validation
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -37,10 +44,15 @@ export class LoginComponent implements OnInit {
 
     // prevent navigate login page after loggined
     if(this.authService.isLoggedIn()){
-      this.router.navigate(['/dashboard'])
+      this.router.navigate(['/user/dashboard'])
     }
   }
 
+  
+
+  
+
+  // login submit function 
   onLoginSubmit() {
     if (this.loginForm.valid) {
       console.log('login form', this.loginForm.value);
@@ -49,7 +61,8 @@ export class LoginComponent implements OnInit {
         next: (res: any) => {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true')
-            this.router.navigate(['/dashboard']);
+            localStorage.setItem('token', res.token)
+            this.router.navigate(['/user/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Login Successfull!',

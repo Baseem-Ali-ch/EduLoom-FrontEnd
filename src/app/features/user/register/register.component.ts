@@ -6,10 +6,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { StateObservable, Store } from '@ngrx/store';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import Swal from 'sweetalert2';
+import { register } from '../../../state/user/user.action';
+import { selectIsLoading } from '../../../state/user/user.selector';
+import { AppState } from '../../../state/user/user.state';
+import { User } from '../../../core/models/IUser';
 
 @Component({
   selector: 'app-register',
@@ -20,13 +24,18 @@ import Swal from 'sweetalert2';
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
-
+  isLoading: boolean = false;
   constructor(
     private fb: FormBuilder,
-    private store: Store,
+    private store: Store<AppState>,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) {
+    // select the loading state
+    this.store
+      .select(selectIsLoading)
+      .subscribe((isLoading) => (this.isLoading = isLoading));
+  }
 
   ngOnInit(): void {
     // register form validation
@@ -51,7 +60,7 @@ export class RegisterComponent implements OnInit {
 
     // prevent navigate register page after loggined
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/user/dashboard']);
     }
   }
 
@@ -63,6 +72,10 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
+    const { userName, email, password } = this.registerForm.value;
+    this.store.dispatch(
+      register({ userName: userName, email: email, password: password })
+    );
     if (this.registerForm.valid) {
       console.log('registration dispatched : ', this.registerForm.value);
       this.authService.register(this.registerForm.value).subscribe({
@@ -70,7 +83,10 @@ export class RegisterComponent implements OnInit {
           const email = this.registerForm.value.email;
           if (res) {
             localStorage.setItem('email', email);
-            this.router.navigate([`/otp-verify/${email}`]);
+
+            // navigate the otp page and send the sate
+            this.router.navigate([`/user/otp-verify/${email}`]);
+
             Swal.fire({
               icon: 'success',
               title: 'OTP Send Successful',

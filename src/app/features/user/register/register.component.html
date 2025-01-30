@@ -6,7 +6,7 @@
             </div>
 
             <div class="flex items-center justify-center mt-6">
-                <a routerLink="/login"
+                <a routerLink="/user/login"
                     class="w-1/3 pb-4 font-medium text-center text-gray-500 capitalize border-b dark:border-gray-400 dark:text-gray-300">
                     sign in
                 </a>
@@ -100,10 +100,22 @@
                 class="text-red-500 text-sm">Password do not match. </p>
 
             <div class="mt-6">
-                <button type="submit"
-                    class="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-                    Sign Up
-                </button>
+                <div class="relative">
+                    <button type="submit"
+                        class="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                        [disabled]="isLoading">
+                        <ng-container *ngIf="!isLoading; else loadingSpinner">
+                            Sign Up
+                        </ng-container>
+                        <ng-template #loadingSpinner>
+                            <div class="flex items-center justify-center">
+                                <div class="loader" aria-label="Loading..."></div>
+                            </div>
+                        </ng-template>
+                    </button>
+                </div>
+
+
 
                 <p class="mt-4 text-center text-gray-600 dark:text-gray-400">or sign in with</p>
 
@@ -128,7 +140,7 @@
                 </a>
 
                 <div class="mt-6 text-center ">
-                    <a routerLink="/login" class="text-sm text-blue-500 hover:underline dark:text-blue-400">
+                    <a routerLink="/user/login" class="text-sm text-blue-500 hover:underline dark:text-blue-400">
                         Already have an account?
                     </a>
                 </div>
@@ -136,4 +148,3 @@
         </form>
     </div>
 </section>
-    

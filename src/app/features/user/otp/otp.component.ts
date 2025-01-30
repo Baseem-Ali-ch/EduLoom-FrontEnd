@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../core/services/auth.service';
+import { registerSuccess } from '../../../state/user/user.action';
 
 @Component({
   selector: 'app-otp',
@@ -24,7 +25,8 @@ export class OtpComponent implements OnInit {
   isExpired: boolean = false;
   timer: any;
   remainingTime = 60;
-  token!: string
+  token!: string;
+  user: any;
 
   constructor(
     private fb: FormBuilder,
@@ -41,13 +43,13 @@ export class OtpComponent implements OnInit {
     this.startTimer();
 
     // retrive the email in params
-    this.route.params.subscribe(params => {
-      this.email = params['email']
-    })
+    this.route.params.subscribe((params) => {
+      this.email = params['email'];
+    });
 
     // prevent navigate otp page after loggined
-    if(this.authService.isLoggedIn()){
-      this.router.navigate(['/dashboard']);
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/user/dashboard']);
     }
   }
 
@@ -55,12 +57,11 @@ export class OtpComponent implements OnInit {
   verifyOTP(): void {
     if (this.otpForm.valid && this.email) {
       const { otp } = this.otpForm.value;
-      console.log('verfify otp fron', this.otpForm.value, this.email);
       this.authService.verifyOtp(this.email, otp).subscribe({
         next: (res: any) => {
           if (res) {
-            localStorage.setItem('isLoggedIn', 'true')
-            this.router.navigate(['/dashboard']);
+            localStorage.setItem('isLoggedIn', 'true');
+            this.router.navigate(['/user/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Registration Successfull!',

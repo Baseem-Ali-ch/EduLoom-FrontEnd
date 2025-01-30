@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
@@ -5,8 +6,13 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './notfound.component.html',
-  styleUrl: './notfound.component.css'
+  styleUrl: './notfound.component.css',
 })
 export class NotfoundComponent {
 
+  constructor(private location: Location){}
+  
+  goBack(): void {
+    this.location.back();
+  }
 }

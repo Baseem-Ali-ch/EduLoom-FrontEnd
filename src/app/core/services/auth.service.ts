@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/IUser';
 
 @Injectable({
@@ -8,6 +8,7 @@ import { User } from '../models/IUser';
 })
 export class AuthService {
   loggedIn: boolean = false;
+  private userSubject = new BehaviorSubject<any>(null);
 
   private apiUrl = 'http://localhost:3001';
 
@@ -27,6 +28,14 @@ export class AuthService {
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/user/login`, { email, password });
   }
+
+  // get token from session
+  getToken() {
+    return localStorage.getItem('token');
+  }
+
+
+  
 
   isLoggedIn(): boolean {
     return this.loggedIn || localStorage.getItem('isLoggedIn') === 'true';

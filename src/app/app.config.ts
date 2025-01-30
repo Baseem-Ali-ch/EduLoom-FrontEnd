@@ -6,12 +6,13 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { authReducer } from './state/user/user.reducer';
 import { provideHttpClient } from '@angular/common/http';
+import { AppState } from './state/user/user.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideStore({ auth: authReducer }),
+    provideStore<AppState>({ registration: authReducer }),
     provideHttpClient()
   ],
 };

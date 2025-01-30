@@ -1,0 +1,130 @@
+<div *ngIf="isInstructorOpen" class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
+
+        <!-- Modal container -->
+        <div
+            class="relative inline-block w-full max-w-4xl px-6 pt-6 pb-6 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900">
+            <h3 class="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white text-center">
+                Become An Instructor
+            </h3>
+
+            <form class="mt-4 w-full max-w-3xl mx-auto" (ngSubmit)="onSubmit()" [formGroup]="instructorDetailsForm">
+                <div class="flex flex-wrap w-full -mx-4">
+                    <div class="w-full md:w-1/2 px-4">
+                        <!-- Name -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Name</label>
+                            <input formControlName="userName" type="text" name="userName"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('userName')?.hasError('required') && instructorDetailsForm.get('userName')?.touched"
+                                class="mt-1 text-red-500 text-xs">Name is required</p>
+                            <p *ngIf="instructorDetailsForm.get('userName')?.hasError('minlength') && instructorDetailsForm.get('userName')?.touched"
+                                class="mt-1 text-red-500 text-xs">Name must be at least 5 characters long</p>
+                        </div>
+            
+                        <!-- Email -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Email</label>
+                            <input formControlName="email" type="email" name="email"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('email')?.hasError('required') && instructorDetailsForm.get('email')?.touched"
+                                class="mt-1 text-red-500 text-xs">Email is required</p>
+                            <p *ngIf="instructorDetailsForm.get('email')?.hasError('email') && instructorDetailsForm.get('email')?.touched"
+                                class="mt-1 text-red-500 text-xs">Please enter a valid email address</p>
+                        </div>
+            
+                        <!-- Phone Number -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Phone Number</label>
+                            <input formControlName="phone" type="tel" name="phone"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('phone')?.hasError('required') && instructorDetailsForm.get('phone')?.touched"
+                                class="mt-1 text-red-500 text-xs">Phone number is required</p>
+                            <p *ngIf="(instructorDetailsForm.get('phone')?.hasError('pattern') || instructorDetailsForm.get('phone')?.hasError('maxlength')) && instructorDetailsForm.get('phone')?.touched"
+                                class="mt-1 text-red-500 text-xs">Phone number must be 10 digits</p>
+                        </div>
+            
+                        <!-- Place -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Place</label>
+                            <input formControlName="place" type="text" name="place"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('place')?.hasError('required') && instructorDetailsForm.get('place')?.touched"
+                                class="mt-1 text-red-500 text-xs">Place is required</p>
+                        </div>
+            
+                        <!-- State -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">State</label>
+                            <input formControlName="state" type="text" name="state"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('state')?.hasError('required') && instructorDetailsForm.get('state')?.touched"
+                                class="mt-1 text-red-500 text-xs">State is required</p>
+                        </div>
+                    </div>
+            
+                    <div class="w-full md:w-1/2 px-4">
+                        <!-- Qualification -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Qualification</label>
+                            <input formControlName="qualification" type="text" name="qualification"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('qualification')?.hasError('required') && instructorDetailsForm.get('qualification')?.touched"
+                                class="mt-1 text-red-500 text-xs">Qualification is required</p>
+                        </div>
+            
+                        <!-- Work Experience -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Work Experience (in years)</label>
+                            <input formControlName="workExperience" type="number" name="workExperience" min="0"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('workExperience')?.hasError('required') && instructorDetailsForm.get('workExperience')?.touched"
+                                class="mt-1 text-red-500 text-xs">Work experience is required</p>
+                            <!-- <p *ngIf="(instructorDetailsForm.get('workExperience')?.hasError('pattern') || instructorDetailsForm.get('workExperience')?.hasError('maxlength')) && instructorDetailsForm.get('workExperience')?.touched"
+                                class="mt-1 text-red-500 text-xs">Enter a valid year (YYYY format)</p> -->
+                        </div>
+            
+                        <!-- Last Working Place -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Last Working Place</label>
+                            <input formControlName="lastWorkingPlace" type="text" name="lastWorkingPlace"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('lastWorkingPlace')?.hasError('required') && instructorDetailsForm.get('lastWorkingPlace')?.touched"
+                                class="mt-1 text-red-500 text-xs">Last working place is required</p>
+                        </div>
+            
+                        <!-- Specialization -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">Specialization</label>
+                            <input formControlName="specialization" type="text" name="specialization"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                            <p *ngIf="instructorDetailsForm.get('specialization')?.hasError('required') && instructorDetailsForm.get('specialization')?.touched"
+                                class="mt-1 text-red-500 text-xs">Specialization is required</p>
+                        </div>
+            
+                        <!-- LinkedIn Profile (Optional) -->
+                        <div class="mt-3">
+                            <label class="text-sm text-gray-700 dark:text-gray-200">LinkedIn Profile (Optional)</label>
+                            <input formControlName="linkedinProfile" type="url" name="linkedinProfile"
+                                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Action Buttons -->
+                <div class="mt-6 flex justify-end gap-4">
+                    <button (click)="instructorClose.emit()" type="button"
+                        class="px-6 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
+                        Cancel
+                    </button>
+                    <button type="submit" [disabled]="!instructorDetailsForm.valid"
+                        class="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Send Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
