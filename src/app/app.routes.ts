@@ -79,6 +79,20 @@ export const routes: Routes = [
             (c) => c.ProfileComponent
           ),
       },
+      {
+        path: 'students',
+        loadComponent: () =>
+          import('./features/admin/user-manage/user-manage.component').then(
+            (c) => c.UserManageComponent
+          ),
+      },
+      {
+        path: 'instructors',
+        loadComponent: () =>
+          import('./features/admin/instructor-manage/instructor-manage.component').then(
+            (c) => c.InstructorManageComponent
+          ),
+      },
     ],
   },
 
