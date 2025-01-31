@@ -1,10 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthState } from '../../core/models/IUser';
-import {
-  register,
-  registerError,
-  registerSuccess
-} from './user.action';
+import { login, register, registerError, registerSuccess } from './user.action';
 
 const initialState: AuthState = {
   user: null,
@@ -26,5 +22,6 @@ export const authReducer = createReducer(
     ...state,
     loading: false,
     error,
-  }))
+  })),
+  on(login, (state) => ({ ...state, loading: true, error: null }))
 );

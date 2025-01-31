@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { StateObservable, Store } from '@ngrx/store';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/services/user/auth.service';
 import Swal from 'sweetalert2';
 import { register } from '../../../state/user/user.action';
 import { selectIsLoading } from '../../../state/user/user.selector';

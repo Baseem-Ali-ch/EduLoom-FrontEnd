@@ -1,42 +1,32 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../core/services/user/auth.service';
+import { AuthService } from '../../../core/services/admin/auth.service';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { selectIsLoading } from '../../../state/user/user.selector';
-import { AppState } from '../../../state/user/user.state';
-import { login } from '../../../state/user/user.action';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class AdminLoginComponent implements OnInit {
   loginForm!: FormGroup;
   token!: string;
   isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private store: Store<AppState>,
-    private authService: AuthService,
+    private adminAuthService: AuthService,
     private router: Router
-  ) {
-    // select the loading state
-    this.store
-      .select(selectIsLoading)
-      .subscribe((isLoading) => (this.isLoading = isLoading));
-  }
+  ) {}
 
   ngOnInit(): void {
     // login form validation
@@ -46,8 +36,8 @@ export class LoginComponent implements OnInit {
     });
 
     // prevent navigate login page after loggined
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/user/dashboard']);
+    if (this.adminAuthService.isLoggedIn()) {
+      this.router.navigate(['/admin/dashboard']);
     }
   }
 
@@ -55,13 +45,12 @@ export class LoginComponent implements OnInit {
   onLoginSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.store.dispatch(login({ email: email, password: password }));
-      this.authService.login(email, password).subscribe({
+      this.adminAuthService.login(email, password).subscribe({
         next: (res: any) => {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('token', res.token);
-            this.router.navigate(['/user/dashboard']);
+            this.router.navigate(['/admin/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Login Successfull!',

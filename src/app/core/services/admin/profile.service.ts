@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { User } from '../models/IUser';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { InstructorRequest } from '../models/Instructor';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from '../../models/IUser';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +19,7 @@ export class ProfileService {
   // get user details from db
   getUser(): Observable<any> {
     const token = this.getToken();
-    return this.http.get(`${this.apiUrl}/user/getUser`, {
+    return this.http.get(`${this.apiUrl}/admin/getUser`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -30,7 +29,7 @@ export class ProfileService {
   // update user details
   updateUser(userData: User): Observable<any> {
     const token = this.getToken();
-    return this.http.put(`${this.apiUrl}/user/profileUpdate`, userData, {
+    return this.http.put(`${this.apiUrl}/admin/profileUpdate`, userData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -41,14 +40,12 @@ export class ProfileService {
   uploadProfilePhoto(formData: FormData): Observable<any> {
     console.log('form data', formData);
     const token = this.getToken();
-    return this.http.post(`${this.apiUrl}/user/profile-photo`, formData, {
+    return this.http.post(`${this.apiUrl}/admin/profile-photo`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   }
-
-
 
   // get full image URL
   getFullImageUrl(photoUrl: string): string {
@@ -56,15 +53,5 @@ export class ProfileService {
       return `${this.apiUrl}${photoUrl}`;
     }
     return photoUrl;
-  }
-
-  // send request to become instructor
-  becomeInstructor(instructorData: InstructorRequest): Observable<any> {
-    const token = this.getToken();
-    return this.http.post(`${this.apiUrl}/user/instructor-request`, instructorData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
   }
 }

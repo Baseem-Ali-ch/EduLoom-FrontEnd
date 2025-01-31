@@ -20,28 +20,32 @@ export class InstructorReqComponent implements OnInit {
   @Output() instructorClose = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
   instructorDetailsForm!: FormGroup;
+  email: string = '';
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.instructorDetailsForm = this.fb.group({
       userName: ['', [Validators.required, Validators.minLength(5)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [
-        Validators.required,
-        Validators.pattern('^[0-9]{10}$')  // Better pattern for phone numbers
-      ]],
+      // email: ['', [Validators.required, Validators.email]],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('^[0-9]{10}$'), // Better pattern for phone numbers
+        ],
+      ],
       place: ['', [Validators.required]],
       state: ['', [Validators.required]],
       qualification: ['', [Validators.required]],
-      workExperience: ['', [
-        Validators.required
-      ]],
+      workExperience: ['', [Validators.required]],
       lastWorkingPlace: ['', [Validators.required]],
       specialization: ['', [Validators.required]],
-      linkedinProfile: ['']
+      linkedinProfile: [''],
     });
   }
+
+
 
   onSubmit(): void {
     if (this.instructorDetailsForm.valid) {

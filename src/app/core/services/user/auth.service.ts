@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from '../models/IUser';
+import { User } from '../../models/IUser';
 
 @Injectable({
   providedIn: 'root',
@@ -33,9 +33,6 @@ export class AuthService {
   getToken() {
     return localStorage.getItem('token');
   }
-
-
-  
 
   isLoggedIn(): boolean {
     return this.loggedIn || localStorage.getItem('isLoggedIn') === 'true';

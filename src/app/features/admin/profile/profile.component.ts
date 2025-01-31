@@ -1,23 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { AuthService } from '../../../core/services/user/auth.service';
-import { CommonModule } from '@angular/common';
-import { EditModalComponent } from './edit-modal/edit-modal.component';
+import { ProfileService } from '../../../core/services/admin/profile.service';
 import Swal from 'sweetalert2';
-import { InstructorReqComponent } from './instructor-req/instructor-req.component';
-import { ProfileService } from '../../../core/services/user/profile.service';
+import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
+import { EditModalComponent } from './edit-modal/edit-modal.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [
-    SidebarComponent,
-    CommonModule,
-    EditModalComponent,
-    InstructorReqComponent,
-  ],
+  imports: [AdminSidebarComponent, EditModalComponent, CommonModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
+  styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
   user: any;
@@ -157,51 +150,5 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // send instructor details to admin
-  sendInstructorDetails(instructorDetails: any) {
-    this.profileService.becomeInstructor(instructorDetails, this.user._id).subscribe({
-      next: (response: any) => {
-        this.closeInstructorReqModal();
-        if (response) {
-          Swal.fire({
-            icon: 'success',
-            title: response.message,
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: 'rgb(8, 10, 24)',
-            color: 'white',
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Failed to send request',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: 'rgb(8, 10, 24)',
-            color: 'white',
-          });
-        }
-      },
-      error: (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: error.error?.message || 'Faile to send request',
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          background: 'rgb(8, 10, 24)',
-          color: 'white',
-        });
-        console.error('Faile to send request', error);
-      },
-    });
-  }
 }
+

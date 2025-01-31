@@ -8,10 +8,15 @@ export const register = createAction(
 
 export const registerSuccess = createAction(
   '[Auth] Register Success',
-  props<{ user:User }>()
+  props<{ user: User }>()
 );
 
 export const registerError = createAction(
   '[Auth] Register Fail',
   props<{ error: string }>()
+);
+
+export const login = createAction(
+  '[Auth] Login',
+  props<{ email: string; password: string }>()
 );

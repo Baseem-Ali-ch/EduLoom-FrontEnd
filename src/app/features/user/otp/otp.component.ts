@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import Swal from 'sweetalert2';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/services/user/auth.service';
 import { registerSuccess } from '../../../state/user/user.action';
 
 @Component({

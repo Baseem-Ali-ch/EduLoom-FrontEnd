@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import Swal from 'sweetalert2';
 import { AppState } from '../../../state/user/user.state';
-import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../core/services/user/profile.service';
+import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'app-admin-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css',
+  imports: [RouterModule, CommonModule],
+  templateUrl: './admin-sidebar.component.html',
+  styleUrl: './admin-sidebar.component.css',
 })
-export class SidebarComponent implements OnInit {
+export class AdminSidebarComponent implements OnInit{
   user: any;
 
   constructor(
@@ -46,9 +46,7 @@ export class SidebarComponent implements OnInit {
   // logout
   onLogout() {
     localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('token');
-
-    this.router.navigate(['/user/login']);
+    this.router.navigate(['/admin/login']);
     if (!localStorage.getItem('isLoggedIn')) {
       Swal.fire({
         icon: 'success',
