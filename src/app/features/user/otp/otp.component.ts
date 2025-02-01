@@ -110,7 +110,21 @@ export class OtpComponent implements OnInit {
   }
 
   // resend otp function handling
-  resendOTP(): void {}
+  resendOTP(): void {
+    if (this.isExpired && this.email) {
+      this.authService.resendOtp(this.email).subscribe({
+        next: (res: any) => {
+          // Restart the timer after sending a new OTP
+          this.startTimer();
+        },
+        error: (error) => {
+          console.log('Error while resending OTP', error);
+        },
+      });
+    } else {
+      console.log('Please wait until the timer expires.');
+    }
+  }
 
   // timer handling function
   startTimer(): void {

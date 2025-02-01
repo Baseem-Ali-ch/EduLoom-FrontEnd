@@ -18,26 +18,26 @@
         <!-- personal details -->
         <div class="flex">
             <div class="container px-6 py-10 mx-auto">
-                <div class="w-full px-4 py-3 bg-white rounded-md shadow-md dark:bg-gray-800">
+                <div class="w-full px-4 py-3 rounded-md shadow-md bg-gray-800">
                     <div *ngIf="user; else loggedOut">
                         <div class="flex">
-                            <h1 class="mt-2 text-xl font-semibold text-gray-800 dark:text-white">Personal Details</h1>
+                            <h1 class="mt-2 text-xl font-semibold text-white">Personal Details</h1>
                             <button (click)="openEditModal()"
                                 class="mt-2.5 mx-10 text-md text-blue-500 hover:underline">Edit</button>
                         </div>
 
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Name</p>
-                        <p class="mt-0 mx-2 text-lg text-gray-600 dark:text-gray-300">{{user.userName || 'N/A'}}</p>
+                        <p class="mt-2 text-sm text-gray-300">Name</p>
+                        <p class="mt-0 mx-2 text-lg text-gray-300">{{user.userName || 'N/A'}}</p>
 
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Email</p>
-                        <p class="mt-0 mx-2 text-lg text-gray-600 dark:text-gray-300">{{user.email || 'N/A'}}</p>
+                        <p class="mt-2 text-sm text-gray-300">Email</p>
+                        <p class="mt-0 mx-2 text-lg text-gray-300">{{user.email || 'N/A'}}</p>
 
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Phone</p>
-                        <p class="mt-0 mx-2 text-lg text-gray-600 dark:text-gray-300">{{user.phone || 'N/A' }}</p>
+                        <p class="mt-2 text-sm text-gray-300">Phone</p>
+                        <p class="mt-0 mx-2 text-lg text-gray-300">{{user.phone || 'N/A' }}</p>
 
                     </div>
                     <ng-template #loggedOut>
-                        <p class="mt-2 text-lg text-gray-600 dark:text-gray-300">No user data</p>
+                        <p class="mt-2 text-lg text-gray-300">No user data</p>
                     </ng-template>
                 </div>
             </div>
@@ -47,10 +47,10 @@
 
             <!-- profile photo -->
             <div class="container px-6 py-10 mx-auto">
-                <div class="w-full px-4 py-3 bg-white rounded-md shadow-md dark:bg-gray-800">
+                <div class="w-full px-4 py-3 rounded-md shadow-md bg-gray-800">
                     <div *ngIf="user">
                         <div class="flex items-center justify-between">
-                            <h1 class="mt-2 text-xl font-semibold text-gray-800 dark:text-white">Profile Photo</h1>
+                            <h1 class="mt-2 text-xl font-semibold text-white">Profile Photo</h1>
                             <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*"
                                 class="hidden">
                             <button (click)="fileInput.click()"
@@ -73,10 +73,10 @@
 
         <!-- become an instructor -->
         <div class="container px-6 py-10 mx-auto">
-            <div class="w-full px-4 bg-white rounded-md shadow-md dark:bg-gray-800">
+            <div class="w-full px-4 rounded-md shadow-md dark:bg-gray-800">
                 <div class="flex justify-between">
                     <div>
-                        <h1 class="mt-2 text-xl font-semibold text-gray-800 dark:text-white">Become an Instructor</h1>
+                        <h1 class="mt-2 text-xl font-semibold text-white">Become an Instructor</h1>
                         <button (click)="openInstructorReqModal()"
                             class="mt-10 mb-8 px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
                             Start Teaching
