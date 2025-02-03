@@ -25,6 +25,9 @@ import { User } from '../../../core/models/IUser';
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   isLoading: boolean = false;
+  showPassword: boolean = false;
+
+
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,
@@ -131,5 +134,9 @@ export class RegisterComponent implements OnInit {
     } else {
       this.registerForm.markAllAsTouched();
     }
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 }

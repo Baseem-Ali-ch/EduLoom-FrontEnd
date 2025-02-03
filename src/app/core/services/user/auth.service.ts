@@ -34,6 +34,15 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/student/login`, { email, password });
   }
 
+  // forget password
+  forgetPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/student/forget-password`, { email });
+  }
+
+  resetPassword(password: string, token: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/student/reset-password`, { password, token });
+  }
+
   // get token from session
   getToken() {
     return localStorage.getItem('token');

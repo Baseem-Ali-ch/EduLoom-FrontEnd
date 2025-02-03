@@ -5,6 +5,8 @@ import { OtpComponent } from './features/user/otp/otp.component';
 import { NotfoundComponent } from './shared/components/notfound/notfound.component';
 import { authGuard } from './core/guards/auth.guard';
 import { UserComponent } from './features/user/user/user.component';
+import { ForgetPasswordComponent } from './features/user/forget-password/forget-password.component';
+import { ResetPasswordComponent } from './features/user/reset-password/reset-password.component';
 
 export const routes: Routes = [
   // student routes
@@ -16,6 +18,8 @@ export const routes: Routes = [
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
       { path: 'otp-verify/:email', component: OtpComponent },
+      { path: 'forget-password', component: ForgetPasswordComponent },
+      { path: 'reset-password/:token', component: ResetPasswordComponent },
       {
         path: 'dashboard',
         loadComponent: () =>

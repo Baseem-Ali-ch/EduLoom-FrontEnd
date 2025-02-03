@@ -48,7 +48,7 @@ export class SidebarComponent implements OnInit {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('token');
 
-    this.router.navigate(['/user/login']);
+    this.router.navigate(['/student/login']);
     if (!localStorage.getItem('isLoggedIn')) {
       Swal.fire({
         icon: 'success',

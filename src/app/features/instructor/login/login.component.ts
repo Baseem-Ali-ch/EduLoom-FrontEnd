@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   token!: string;
   isLoading: boolean = false;
+  showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -95,6 +96,10 @@ export class LoginComponent implements OnInit {
       console.log('no find email');
       this.loginForm.markAllAsTouched();
     }
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 }
 

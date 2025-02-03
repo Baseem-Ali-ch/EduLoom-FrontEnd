@@ -1,17 +1,17 @@
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-notfound',
   standalone: true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './notfound.component.html',
   styleUrl: './notfound.component.css',
 })
 export class NotfoundComponent {
+  constructor(private location: Location) {}
 
-  constructor(private location: Location){}
-  
   goBack(): void {
     this.location.back();
   }
