@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { InstructorRequest } from '../../models/Instructor';
 import { User } from '../../models/IUser';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -18,9 +17,9 @@ export class ProfileService {
   }
 
   // get user details from db
-  getUser(): Observable<any> {
+  getInstructor(): Observable<any> {
     const token = this.getToken();
-    return this.http.get(`${this.apiUrl}/student/getUser`, {
+    return this.http.get(`${this.apiUrl}/instructor/getInstructor`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -30,7 +29,7 @@ export class ProfileService {
   // update user details
   updateUser(userData: User): Observable<any> {
     const token = this.getToken();
-    return this.http.put(`${this.apiUrl}/student/profileUpdate`, userData, {
+    return this.http.put(`${this.apiUrl}/instructor/profileUpdate`, userData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -41,7 +40,7 @@ export class ProfileService {
   uploadProfilePhoto(formData: FormData): Observable<any> {
     console.log('form data', formData);
     const token = this.getToken();
-    return this.http.post(`${this.apiUrl}/student/profile-photo`, formData, {
+    return this.http.post(`${this.apiUrl}/instructor/profile-photo`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -54,24 +53,5 @@ export class ProfileService {
       return `${this.apiUrl}${photoUrl}`;
     }
     return photoUrl;
-  }
-
-  // send request to become instructor
-  becomeInstructor(
-    instructorData: InstructorRequest,
-    id: string
-  ): Observable<any> {
-    const token = this.getToken();
-    const requestBody = { ...instructorData, id };
-
-    return this.http.post(
-      `${this.apiUrl}/student/instructor-request`,
-      requestBody,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
   }
 }

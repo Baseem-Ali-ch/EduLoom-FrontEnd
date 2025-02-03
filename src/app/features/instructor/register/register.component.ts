@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -6,14 +5,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { StateObservable, Store } from '@ngrx/store';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../core/services/user/auth.service';
-import Swal from 'sweetalert2';
-import { register } from '../../../state/user/user.action';
-import { selectIsLoading } from '../../../state/user/user.selector';
 import { AppState } from '../../../state/user/user.state';
-import { User } from '../../../core/models/IUser';
+import { Store } from '@ngrx/store';
+import { AuthService } from '../../../core/services/instructor/auth.service';
+import { Router, RouterModule } from '@angular/router';
+import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -32,9 +29,9 @@ export class RegisterComponent implements OnInit {
     private router: Router
   ) {
     // select the loading state
-    this.store
-      .select(selectIsLoading)
-      .subscribe((isLoading) => (this.isLoading = isLoading));
+    // this.store
+    //   .select(selectIsLoading)
+    //   .subscribe((isLoading) => (this.isLoading = isLoading));
   }
 
   ngOnInit(): void {
@@ -60,7 +57,7 @@ export class RegisterComponent implements OnInit {
 
     // prevent navigate register page after loggined
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/student/dashboard']);
+      this.router.navigate(['/user/dashboard']);
     }
   }
 
@@ -72,24 +69,15 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const { userName, email, password } = this.registerForm.value;
-    this.store.dispatch(
-      register({ userName: userName, email: email, password: password })
-    );
     if (this.registerForm.valid) {
-      console.log('registration dispatched : ', this.registerForm.value);
       this.authService.register(this.registerForm.value).subscribe({
-        next: (res: Response) => {
-          const email = this.registerForm.value.email;
+        next: (res: any) => {
           if (res) {
-            localStorage.setItem('email', email);
-
-            // navigate the otp page and send the sate
-            this.router.navigate([`/student/otp-verify/${email}`]);
-
+            localStorage.setItem('token', res.token);
+            this.router.navigate(['/instructor/dashboard'])
             Swal.fire({
               icon: 'success',
-              title: 'OTP Send Successful',
+              title: 'Registered Successfully',
               toast: true,
               position: 'top-end',
               showConfirmButton: false,
@@ -101,7 +89,7 @@ export class RegisterComponent implements OnInit {
           } else {
             Swal.fire({
               icon: 'error',
-              title: 'Failed to send OTP',
+              title: 'Failed to register',
               toast: true,
               position: 'top-end',
               showConfirmButton: false,
@@ -114,7 +102,7 @@ export class RegisterComponent implements OnInit {
         },
         error: (error) => {
           console.log('Error during registration', error);
-          const errorMessage = error.error?.message || 'Failed to send OTP';
+          const errorMessage = error.error?.message;
           Swal.fire({
             icon: 'error',
             title: errorMessage,

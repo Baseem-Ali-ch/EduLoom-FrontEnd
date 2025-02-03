@@ -16,22 +16,22 @@ export class AuthService {
 
   // reigster
   register(user: User): Observable<any> {
-    return this.http.post(`${this.apiUrl}/user/register`, { user });
+    return this.http.post(`${this.apiUrl}/student/register`, { user });
   }
 
   // verify otp
   verifyOtp(email: string, otp: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/user/verify-otp`, { email, otp });
+    return this.http.post(`${this.apiUrl}/student/verify-otp`, { email, otp });
   }
 
   // resend otp
   resendOtp(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/user/resend-otp`, { email });
+    return this.http.post(`${this.apiUrl}/student/resend-otp`, { email });
   }
 
   // login
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/user/login`, { email, password });
+    return this.http.post(`${this.apiUrl}/student/login`, { email, password });
   }
 
   // get token from session

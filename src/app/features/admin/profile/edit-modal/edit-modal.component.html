@@ -1,56 +1,43 @@
-<div *ngIf="isOpen" class="fixed inset-0 z-10 overflow-y-auto">
-    <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-      <!-- Background overlay -->
-      <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" ></div>
+<div *ngIf="isOpen" class="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-75">
+  <div class="relative w-full max-w-sm p-6 bg-gray-900 rounded-lg shadow-xl">
+    <h3 class="text-lg font-medium leading-6 capitalize text-white">
+      Edit Profile
+    </h3>
 
-      <span class="hidden sm:inline-block sm:h-screen sm:align-middle">&#8203;</span>
+      <form class="mt-4" (ngSubmit)="onSubmit()" [formGroup]="updateProfileForm">
+        <div class="mt-3">
+          <label class="text-sm text-gray-700 dark:text-gray-200">Name</label>
+          <input formControlName="userName" type="text" name="userName"
+            class="block w-full px-4 py-3 mt-1 text-sm text-gray-700  border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+          <p *ngIf="updateProfileForm.get('userName')?.hasError('minlength') && updateProfileForm.get('userName')?.touched"
+            class="text-red-500 text-sm">Username must be at least 5 characters long</p>
+        </div>
 
-      <div class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
-        <h3 class="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white">
-          Edit Profile
-        </h3>
+        <div class="mt-3">
+          <label class="text-sm text-gray-700 dark:text-gray-200">Phone Number</label>
+          <input formControlName="phone" type="tel" name="phone"
+            class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300">
+          <p *ngIf="updateProfileForm.get('phone')?.hasError('minlength') && updateProfileForm.get('phone')?.touched"
+            class="text-red-500 text-sm">Phone number must be exactly 10 digits long</p>
+          <p *ngIf="updateProfileForm.get('phone')?.hasError('maxlength') && updateProfileForm.get('phone')?.touched"
+            class="text-red-500 text-sm">Phone number cannot exceed 10 digits</p>
+        </div>
 
-        <form class="mt-4" (ngSubmit)="onSubmit()" [formGroup]="updateProfileForm">
-            <div class="mt-3">
-              <label class="text-sm text-gray-700 dark:text-gray-200">Name</label>
-              <input formControlName="userName"
-                type="text" 
-                name="userName"
-                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300"
-              >
-              <p *ngIf="updateProfileForm.get('userName')?.hasError('minlength') && updateProfileForm.get('userName')?.touched"
-                  class="text-red-500 text-sm">Username must be at least 5 characters long</p>
-            </div>
-          
-            <div class="mt-3">
-              <label class="text-sm text-gray-700 dark:text-gray-200">Phone Number</label>
-              <input formControlName="phone"
-                type="tel" 
-                name="phone"
-                class="block w-full px-4 py-3 mt-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300"
-              >
-              <p *ngIf="updateProfileForm.get('phone')?.hasError('minlength') && updateProfileForm.get('phone')?.touched"
-                  class="text-red-500 text-sm">Phone number must be exactly 10 digits long</p>
-              <p *ngIf="updateProfileForm.get('phone')?.hasError('maxlength') && updateProfileForm.get('phone')?.touched"
-                  class="text-red-500 text-sm">Phone number cannot exceed 10 digits</p>
-            </div>
-          
-            <div class="mt-4 sm:flex sm:items-center sm:-mx-2">
-              <button (click)="close.emit()"
-                type="button" 
-                class="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
-              >
-                Cancel
-              </button>
-          
-              <button 
-                type="submit"
-                class="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
-              >
-                Save Changes
-              </button>
-            </div>
-          </form>
-      </div>
+        <div class="mt-4 flex justify-between gap-2">
+          <button (click)="close.emit()"
+            type="button"
+            class="w-1/2 px-4 py-2 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform border rounded-md text-gray-200 border-gray-700 hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+          >
+            Cancel
+          </button>
+  
+          <button
+            type="submit"
+            class="w-1/2 px-4 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
     </div>
   </div>

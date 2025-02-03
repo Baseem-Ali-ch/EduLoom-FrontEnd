@@ -7,9 +7,10 @@ import { authGuard } from './core/guards/auth.guard';
 import { UserComponent } from './features/user/user/user.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/user/login', pathMatch: 'full' },
+  // student routes
+  { path: '', redirectTo: '/student/login', pathMatch: 'full' },
   {
-    path: 'user',
+    path: 'student',
     component: UserComponent,
     children: [
       { path: 'register', component: RegisterComponent },
@@ -40,9 +41,9 @@ export const routes: Routes = [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
-  { path: 'admin', redirectTo: '/admin/login', pathMatch: 'full' },
 
   // admin routes
+  { path: 'admin', redirectTo: '/admin/login', pathMatch: 'full' },
   {
     path: 'admin',
     component: UserComponent,
@@ -85,8 +86,45 @@ export const routes: Routes = [
       {
         path: 'instructors',
         loadComponent: () =>
-          import('./features/admin/instructor-manage/instructor-manage.component').then(
-            (c) => c.InstructorManageComponent
+          import(
+            './features/admin/instructor-manage/instructor-manage.component'
+          ).then((c) => c.InstructorManageComponent),
+      },
+    ],
+  },
+
+  // instructor routes
+  { path: 'instructor', redirectTo: '/instructor/login', pathMatch: 'full' },
+  {
+    path: 'instructor',
+    component: UserComponent,
+    children: [
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./features/instructor/register/register.component').then(
+            (c) => c.RegisterComponent
+          ),
+      },
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./features/instructor/login/login.component').then(
+            (c) => c.LoginComponent
+          ),
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/instructor/dashboard/dashboard.component').then(
+            (c) => c.DashboardComponent
+          ),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/instructor/profile/profile.component').then(
+            (c) => c.ProfileComponent
           ),
       },
     ],

@@ -49,7 +49,7 @@ export class OtpComponent implements OnInit {
 
     // prevent navigate otp page after loggined
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/user/dashboard']);
+      this.router.navigate(['/student/dashboard']);
     }
   }
 
@@ -61,7 +61,7 @@ export class OtpComponent implements OnInit {
         next: (res: any) => {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true');
-            this.router.navigate(['/user/dashboard']);
+            this.router.navigate(['/student/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Registration Successfull!',

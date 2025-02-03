@@ -12,17 +12,17 @@ export class NotificationService {
 
   // get all notifications
   getNotification(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/user/notification`);
+    return this.http.get<any[]>(`${this.apiUrl}/student/notification`);
   }
 
   // update notification status
   updateNotificationStatus(id: string, status: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/user/notification/${id}`, { status });
+    return this.http.put(`${this.apiUrl}/student/notification/${id}`, { status });
   }
 
   // send email if status accepted
   sendAcceptanceEmail(userId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/user/send-email`, {
+    return this.http.post(`${this.apiUrl}/student/send-email`, {
       userId,
       message: 'You are accepted!',
     });
