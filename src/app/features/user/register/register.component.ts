@@ -15,6 +15,9 @@ import { selectIsLoading } from '../../../state/user/user.selector';
 import { AppState } from '../../../state/user/user.state';
 import { User } from '../../../core/models/IUser';
 
+declare const google: any;
+
+
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -26,7 +29,6 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   isLoading: boolean = false;
   showPassword: boolean = false;
-
 
   constructor(
     private fb: FormBuilder,
@@ -65,6 +67,8 @@ export class RegisterComponent implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/student/dashboard']);
     }
+
+    this.renderGoogleSignInButton();
   }
 
   // password match function
@@ -74,6 +78,7 @@ export class RegisterComponent implements OnInit {
     return password === confirmPassword ? null : { misMatch: true };
   }
 
+  // register submit
   onSubmit(): void {
     const { userName, email, password } = this.registerForm.value;
     this.store.dispatch(
@@ -136,7 +141,70 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  // show and hide password handling
   togglePassword() {
     this.showPassword = !this.showPassword;
+  }
+
+  renderGoogleSignInButton() {
+    if (typeof google === 'undefined') {
+      console.error('Google API not loaded');
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id:
+        '608019199691-eelbp162ca7ckpck9ukqthqi9jp993k1.apps.googleusercontent.com',
+      callback: this.handleCredentialResponse.bind(this),
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById('google-login-btn'),
+      {
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'rectangular',
+      }
+    );
+
+    google.accounts.id.prompt();
+  }
+
+  handleCredentialResponse(response: any) {
+    const idToken = response.credential;
+
+    this.authService.googleLogin({ token: idToken }).subscribe({
+      next: (res) => {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('token', res.token);
+        this.router.navigate(['/student/dashboard']);
+        Swal.fire({
+          icon: 'success',
+          title: 'Google Login Successful!',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: 'rgb(8, 10, 24)',
+          color: 'white',
+        });
+      },
+      error: (error) => {
+        console.error('Google login error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Google Login Failed',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: 'rgb(8, 10, 24)',
+          color: 'white',
+        });
+      },
+    });
   }
 }

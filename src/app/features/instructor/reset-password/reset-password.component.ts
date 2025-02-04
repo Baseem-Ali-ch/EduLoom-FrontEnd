@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/user/auth.service';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../../core/services/instructor/auth.service';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-reset-password',
+  selector: 'app-ins-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css',
 })
-export class ResetPasswordComponent implements OnInit {
+export class ResetPasswordComponentIns implements OnInit {
   passwordForm!: FormGroup;
   token: string | null = '';
   showPassword: boolean = false;

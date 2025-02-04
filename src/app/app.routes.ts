@@ -7,6 +7,10 @@ import { authGuard } from './core/guards/auth.guard';
 import { UserComponent } from './features/user/user/user.component';
 import { ForgetPasswordComponent } from './features/user/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './features/user/reset-password/reset-password.component';
+import { ForgetPasswordComponentIns } from './features/instructor/forget-password/forget-password.component';
+import { ResetPasswordComponentIns } from './features/instructor/reset-password/reset-password.component';
+import { insAuthGuard } from './core/guards/ins-auth.guard';
+import { admAuthGuard } from './core/guards/adm-auth.guard';
 
 export const routes: Routes = [
   // student routes
@@ -34,6 +38,7 @@ export const routes: Routes = [
           import('./features/user/profile/profile.component').then(
             (c) => c.ProfileComponent
           ),
+        canActivate: [authGuard],
       },
       {
         path: 'notification',
@@ -41,6 +46,7 @@ export const routes: Routes = [
           import('./features/user/notification/notification.component').then(
             (c) => c.NotificationComponent
           ),
+        canActivate: [authGuard],
       },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
@@ -65,6 +71,7 @@ export const routes: Routes = [
           import('./features/admin/dashboard/dashboard.component').then(
             (c) => c.DashboardComponent
           ),
+        canActivate: [admAuthGuard],
       },
       {
         path: 'notification',
@@ -72,6 +79,7 @@ export const routes: Routes = [
           import('./features/admin/notification/notification.component').then(
             (c) => c.NotificationComponent
           ),
+        canActivate: [admAuthGuard],
       },
       {
         path: 'profile',
@@ -79,6 +87,7 @@ export const routes: Routes = [
           import('./features/admin/profile/profile.component').then(
             (c) => c.ProfileComponent
           ),
+        canActivate: [admAuthGuard],
       },
       {
         path: 'students',
@@ -86,6 +95,7 @@ export const routes: Routes = [
           import('./features/admin/user-manage/user-manage.component').then(
             (c) => c.UserManageComponent
           ),
+        canActivate: [admAuthGuard],
       },
       {
         path: 'instructors',
@@ -93,6 +103,7 @@ export const routes: Routes = [
           import(
             './features/admin/instructor-manage/instructor-manage.component'
           ).then((c) => c.InstructorManageComponent),
+        canActivate: [admAuthGuard],
       },
     ],
   },
@@ -103,6 +114,9 @@ export const routes: Routes = [
     path: 'instructor',
     component: UserComponent,
     children: [
+      { path: 'forget-password', component: ForgetPasswordComponentIns },
+      { path: 'reset-password/:token', component: ResetPasswordComponentIns },
+
       {
         path: 'register',
         loadComponent: () =>
@@ -123,6 +137,7 @@ export const routes: Routes = [
           import('./features/instructor/dashboard/dashboard.component').then(
             (c) => c.DashboardComponent
           ),
+        canActivate: [insAuthGuard],
       },
       {
         path: 'profile',
@@ -130,6 +145,7 @@ export const routes: Routes = [
           import('./features/instructor/profile/profile.component').then(
             (c) => c.ProfileComponent
           ),
+        canActivate: [insAuthGuard],
       },
     ],
   },

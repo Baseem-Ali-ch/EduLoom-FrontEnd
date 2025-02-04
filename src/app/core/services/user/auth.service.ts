@@ -39,8 +39,20 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/student/forget-password`, { email });
   }
 
+  //reset password
   resetPassword(password: string, token: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/reset-password`, { password, token });
+    return this.http.post(`${this.apiUrl}/student/reset-password`, {
+      password,
+      token,
+    });
+  }
+
+  // login with google
+  googleLogin(googleData: {
+    token: string;
+    
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/student/google-auth`, googleData);
   }
 
   // get token from session
