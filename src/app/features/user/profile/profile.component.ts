@@ -6,6 +6,7 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
 import Swal from 'sweetalert2';
 import { InstructorReqComponent } from './instructor-req/instructor-req.component';
 import { ProfileService } from '../../../core/services/user/profile.service';
+import { ChangePasswordModalComponent } from './change-password-modal/change-password-modal.component';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +16,7 @@ import { ProfileService } from '../../../core/services/user/profile.service';
     CommonModule,
     EditModalComponent,
     InstructorReqComponent,
+    ChangePasswordModalComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -24,6 +26,7 @@ export class ProfileComponent implements OnInit {
   instructor: any;
   isModalOpen: boolean = false;
   isInstructorModalOpen: boolean = false;
+  isChangePasswordModalOpen: boolean = false;
 
   constructor(private profileService: ProfileService) {}
 
@@ -108,6 +111,50 @@ export class ProfileComponent implements OnInit {
     this.isInstructorModalOpen = false;
   }
 
+  // change password modal
+  changePassword() {
+    this.isChangePasswordModalOpen = true;
+  }
+
+  // close change password modal
+  closeChangePassword() {
+    this.isChangePasswordModalOpen = false;
+  }
+
+  // save new password
+  savePassword(passwordData: any) {
+    this.profileService.changePassword(passwordData).subscribe({
+      next: (response: any) => {
+        this.closeChangePassword();
+        if (response) {
+          Swal.fire({
+            icon: 'success',
+            title: response.message || 'Password changed successfully',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: response.message || 'Error change password',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        }
+      },
+    });
+  }
+
   // update user details
   saveChanges(updatedData: any) {
     this.profileService.updateUser(updatedData).subscribe({
@@ -159,25 +206,41 @@ export class ProfileComponent implements OnInit {
 
   // send instructor details to admin
   sendInstructorDetails(instructorDetails: any) {
-    this.profileService.becomeInstructor(instructorDetails, this.user._id).subscribe({
-      next: (response: any) => {
-        this.closeInstructorReqModal();
-        if (response) {
-          Swal.fire({
-            icon: 'success',
-            title: response.message,
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: 'rgb(8, 10, 24)',
-            color: 'white',
-          });
-        } else {
+    this.profileService
+      .becomeInstructor(instructorDetails, this.user._id)
+      .subscribe({
+        next: (response: any) => {
+          this.closeInstructorReqModal();
+          if (response) {
+            Swal.fire({
+              icon: 'success',
+              title: response.message,
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: 'rgb(8, 10, 24)',
+              color: 'white',
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Failed to send request',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: 'rgb(8, 10, 24)',
+              color: 'white',
+            });
+          }
+        },
+        error: (error) => {
           Swal.fire({
             icon: 'error',
-            title: 'Failed to send request',
+            title: error.error?.message || 'Faile to send request',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -186,22 +249,8 @@ export class ProfileComponent implements OnInit {
             background: 'rgb(8, 10, 24)',
             color: 'white',
           });
-        }
-      },
-      error: (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: error.error?.message || 'Faile to send request',
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          background: 'rgb(8, 10, 24)',
-          color: 'white',
-        });
-        console.error('Faile to send request', error);
-      },
-    });
+          console.error('Faile to send request', error);
+        },
+      });
   }
 }

@@ -24,6 +24,8 @@
                             <h1 class="mt-2 text-xl font-semibold text-white">Personal Details</h1>
                             <button (click)="openEditModal()"
                                 class="mt-2.5 mx-10 text-md text-blue-500 hover:underline">Edit</button>
+                            <button (click)="changePassword()"
+                                class="mt-2.5 text-md text-blue-500 hover:underline">Change Password</button>
                         </div>
 
                         <div class="flex gap-6">
@@ -110,3 +112,7 @@
 <!-- editing modal -->
 <app-edit-modal [isOpen]="isModalOpen" [instructorData]="instructor" (close)="closeModal()"
     (save)="saveChanges($event)"></app-edit-modal>
+
+<!-- change password modal -->
+<app-change-password [isPasswordOpen]="isChangePasswordModalOpen" (close)="closeChangePassword()"
+    (save)="savePassword($event)"></app-change-password>

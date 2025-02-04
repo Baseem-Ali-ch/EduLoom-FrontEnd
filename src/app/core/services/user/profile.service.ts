@@ -74,4 +74,18 @@ export class ProfileService {
       }
     );
   }
+
+  // change password
+  changePassword(passwordData: any): Observable<any> {
+    const token = this.getToken();
+    return this.http.post(
+      `${this.apiUrl}/student/change-password`,
+      passwordData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
 }

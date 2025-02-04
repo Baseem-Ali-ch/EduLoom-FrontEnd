@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../core/services/instructor/profile.service';
 import Swal from 'sweetalert2';
 import { InstructorSidebarComponent } from '../../../shared/components/instructor-sidebar/instructor-sidebar.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [EditModalComponent, CommonModule, InstructorSidebarComponent],
+  imports: [EditModalComponent, CommonModule, InstructorSidebarComponent, ChangePasswordComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -16,6 +17,7 @@ export class ProfileComponent implements OnInit {
   instructor: any;
   isModalOpen: boolean = false;
   isInstructorModalOpen: boolean = false;
+  isChangePasswordModalOpen: boolean = false;
 
   constructor(private profileService: ProfileService) {}
 
@@ -148,4 +150,48 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+
+  // change password modal
+  changePassword() {
+    this.isChangePasswordModalOpen = true;
+  }
+
+  // close change password modal
+  closeChangePassword() {
+    this.isChangePasswordModalOpen = false;
+  }
+
+   // save new password
+    savePassword(passwordData: any) {
+      this.profileService.changePassword(passwordData).subscribe({
+        next: (response: any) => {
+          this.closeChangePassword();
+          if (response) {
+            Swal.fire({
+              icon: 'success',
+              title: response.message || 'Password changed successfully',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: 'rgb(8, 10, 24)',
+              color: 'white',
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: response.message || 'Error change password',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: 'rgb(8, 10, 24)',
+              color: 'white',
+            });
+          }
+        },
+      });
+    }
 }
