@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/user/user.state';
 import Swal from 'sweetalert2';
 import { ProfileService } from '../../../core/services/instructor/profile.service';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-instructor-sidebar',
@@ -14,13 +15,14 @@ import { CommonModule } from '@angular/common';
   styleUrl: './instructor-sidebar.component.css'
 })
 
-export class InstructorSidebarComponent implements OnInit{
+export class InstructorSidebarComponent implements OnInit, OnDestroy{
   instructor: any;
+  private _subscription: Subscription = new Subscription()
 
   constructor(
-    private router: Router,
-    private store: Store<AppState>,
-    private profileService: ProfileService
+    private _router: Router,
+    private _store: Store<AppState>,
+    private _profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
@@ -29,7 +31,7 @@ export class InstructorSidebarComponent implements OnInit{
 
   // display the user details
   loadInstructorData() {
-    this.profileService.getInstructor().subscribe({
+    const loadInstructorDataSubscription = this._profileService.getInstructor().subscribe({
       next: (response: any) => {
         this.instructor = response.instructor;
       },
@@ -37,17 +39,19 @@ export class InstructorSidebarComponent implements OnInit{
         console.error('Error loading user data:', error);
       },
     });
+    this._subscription.add(loadInstructorDataSubscription)
   }
 
   // get image url
   getImageUrl(photoUrl: string): string {
-    return this.profileService.getFullImageUrl(photoUrl);
+    return this._profileService.getFullImageUrl(photoUrl);
   }
 
   // logout
   onLogout() {
     localStorage.removeItem('isLoggedIn');
-    this.router.navigate(['/instructor/login']);
+    localStorage.removeItem('token');
+    this._router.navigate(['/instructor/login']);
     if (!localStorage.getItem('isLoggedIn')) {
       Swal.fire({
         icon: 'success',
@@ -73,5 +77,9 @@ export class InstructorSidebarComponent implements OnInit{
         color: 'white',
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 }

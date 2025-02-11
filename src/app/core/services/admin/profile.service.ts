@@ -7,9 +7,9 @@ import { User } from '../../models/IUser';
   providedIn: 'root',
 })
 export class ProfileService {
-  private apiUrl = 'http://localhost:3001';
+  private _apiUrl = 'http://localhost:3001';
 
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
 
   // get token from session
   getToken() {
@@ -19,7 +19,7 @@ export class ProfileService {
   // get user details from db
   getUser(): Observable<any> {
     const token = this.getToken();
-    return this.http.get(`${this.apiUrl}/admin/getUser`, {
+    return this._http.get(`${this._apiUrl}/admin/getUser`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -29,7 +29,7 @@ export class ProfileService {
   // update user details
   updateUser(userData: User): Observable<any> {
     const token = this.getToken();
-    return this.http.put(`${this.apiUrl}/admin/profileUpdate`, userData, {
+    return this._http.put(`${this._apiUrl}/admin/profileUpdate`, userData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -40,7 +40,7 @@ export class ProfileService {
   uploadProfilePhoto(formData: FormData): Observable<any> {
     console.log('form data', formData);
     const token = this.getToken();
-    return this.http.post(`${this.apiUrl}/admin/profile-photo`, formData, {
+    return this._http.post(`${this._apiUrl}/admin/profile-photo`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -50,7 +50,7 @@ export class ProfileService {
   // get full image URL
   getFullImageUrl(photoUrl: string): string {
     if (photoUrl && !photoUrl.startsWith('http')) {
-      return `${this.apiUrl}${photoUrl}`;
+      return `${this._apiUrl}${photoUrl}`;
     }
     return photoUrl;
   }
@@ -58,8 +58,8 @@ export class ProfileService {
   // change password
   changePassword(passwordData: any): Observable<any> {
     const token = this.getToken();
-    return this.http.post(
-      `${this.apiUrl}/admin/change-password`,
+    return this._http.post(
+      `${this._apiUrl}/admin/change-password`,
       passwordData,
       {
         headers: {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { AuthService } from '../../../core/services/user/auth.service';
 import { CommonModule } from '@angular/common';
@@ -7,28 +7,24 @@ import Swal from 'sweetalert2';
 import { InstructorReqComponent } from './instructor-req/instructor-req.component';
 import { ProfileService } from '../../../core/services/user/profile.service';
 import { ChangePasswordModalComponent } from './change-password-modal/change-password-modal.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [
-    SidebarComponent,
-    CommonModule,
-    EditModalComponent,
-    InstructorReqComponent,
-    ChangePasswordModalComponent,
-  ],
+  imports: [SidebarComponent, CommonModule, EditModalComponent, InstructorReqComponent, ChangePasswordModalComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   user: any;
   instructor: any;
   isModalOpen: boolean = false;
   isInstructorModalOpen: boolean = false;
   isChangePasswordModalOpen: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(private profileService: ProfileService) {}
+  constructor(private _profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.loadUserData();
@@ -36,7 +32,7 @@ export class ProfileComponent implements OnInit {
 
   // display the user details
   loadUserData() {
-    this.profileService.getUser().subscribe({
+    const loadUserSubscription = this._profileService.getUser().subscribe({
       next: (response: any) => {
         this.user = response.user;
       },
@@ -44,6 +40,7 @@ export class ProfileComponent implements OnInit {
         console.error('Error loading user data:', error);
       },
     });
+    this._subscription.add(loadUserSubscription);
   }
 
   // image file select
@@ -53,7 +50,7 @@ export class ProfileComponent implements OnInit {
       const formData = new FormData();
       formData.append('profilePhoto', file);
 
-      this.profileService.uploadProfilePhoto(formData).subscribe({
+      const fileUploadSubscription = this._profileService.uploadProfilePhoto(formData).subscribe({
         next: (response) => {
           this.user.profilePhoto = response.photoUrl;
           Swal.fire({
@@ -83,12 +80,13 @@ export class ProfileComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(fileUploadSubscription);
     }
   }
 
   // get image url
   getImageUrl(photoUrl: string): string {
-    return this.profileService.getFullImageUrl(photoUrl);
+    return this._profileService.getFullImageUrl(photoUrl);
   }
 
   // open modal
@@ -123,7 +121,7 @@ export class ProfileComponent implements OnInit {
 
   // save new password
   savePassword(passwordData: any) {
-    this.profileService.changePassword(passwordData).subscribe({
+    const changePasswordSubscription = this._profileService.changePassword(passwordData).subscribe({
       next: (response: any) => {
         this.closeChangePassword();
         if (response) {
@@ -153,11 +151,12 @@ export class ProfileComponent implements OnInit {
         }
       },
     });
+    this._subscription.add(changePasswordSubscription);
   }
 
   // update user details
   saveChanges(updatedData: any) {
-    this.profileService.updateUser(updatedData).subscribe({
+    const saveChangesSubscription = this._profileService.updateUser(updatedData).subscribe({
       next: (response: any) => {
         this.loadUserData();
         this.closeModal();
@@ -202,45 +201,18 @@ export class ProfileComponent implements OnInit {
         console.error('Error updating user', error);
       },
     });
+    this._subscription.add(saveChangesSubscription);
   }
 
   // send instructor details to admin
   sendInstructorDetails(instructorDetails: any) {
-    this.profileService
-      .becomeInstructor(instructorDetails, this.user._id)
-      .subscribe({
-        next: (response: any) => {
-          this.closeInstructorReqModal();
-          if (response) {
-            Swal.fire({
-              icon: 'success',
-              title: response.message,
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              background: 'rgb(8, 10, 24)',
-              color: 'white',
-            });
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Failed to send request',
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              background: 'rgb(8, 10, 24)',
-              color: 'white',
-            });
-          }
-        },
-        error: (error) => {
+    const sendInstructorDetailsSubscription = this._profileService.becomeInstructor(instructorDetails, this.user._id).subscribe({
+      next: (response: any) => {
+        this.closeInstructorReqModal();
+        if (response) {
           Swal.fire({
-            icon: 'error',
-            title: error.error?.message || 'Faile to send request',
+            icon: 'success',
+            title: response.message,
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -249,8 +221,38 @@ export class ProfileComponent implements OnInit {
             background: 'rgb(8, 10, 24)',
             color: 'white',
           });
-          console.error('Faile to send request', error);
-        },
-      });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to send request',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        }
+      },
+      error: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: error.error?.message || 'Faile to send request',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: 'rgb(8, 10, 24)',
+          color: 'white',
+        });
+        console.error('Faile to send request', error);
+      },
+    });
+    this._subscription.add(sendInstructorDetailsSubscription);
+  }
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 }

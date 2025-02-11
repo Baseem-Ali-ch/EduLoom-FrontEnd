@@ -10,28 +10,28 @@ export class AuthService {
   loggedIn: boolean = false;
 
   
-  private apiUrl = 'http://localhost:3001';
+  private _apiUrl = 'http://localhost:3001';
 
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
 
   // reigster
   register(instructor:any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/instructor/register`, { instructor });
+    return this._http.post(`${this._apiUrl}/instructor/register`, { instructor });
   }
 
   // login
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/instructor/login`, { email, password });
+    return this._http.post(`${this._apiUrl}/instructor/login`, { email, password });
   }
 
    // forget password
    forgetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/instructor/forget-password`, { email });
+    return this._http.post(`${this._apiUrl}/instructor/forget-password`, { email });
   }
 
   //reset password 
   resetPassword(password: string, token: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/instructor/reset-password`, { password, token });
+    return this._http.post(`${this._apiUrl}/instructor/reset-password`, { password, token });
   }
 
   // get token from session

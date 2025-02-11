@@ -1,15 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/services/user/auth.service';
 import { Router } from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-forget-password',
@@ -18,25 +13,31 @@ import Swal from 'sweetalert2';
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.css',
 })
-export class ForgetPasswordComponent implements OnInit {
+export class ForgetPasswordComponent implements OnInit, OnDestroy {
   forgetPasswordForm!: FormGroup;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private fb: FormBuilder
-  ) {}
+  constructor(private _authService: AuthService, private _router: Router, private _fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.forgetPasswordForm = this.fb.group({
+    this.form()
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  // forget password form
+  form(): void {
+    this.forgetPasswordForm = this._fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
   }
 
   forgetPassword() {
     if (this.forgetPasswordForm.valid) {
-      const email = this.forgetPasswordForm.get('email')?.value
-      this.authService.forgetPassword(email).subscribe({
+      const email = this.forgetPasswordForm.get('email')?.value;
+      const forgetPasswordSubscription = this._authService.forgetPassword(email).subscribe({
         next: (res) => {
           console.log('reset password', res);
           if (res) {
@@ -52,12 +53,15 @@ export class ForgetPasswordComponent implements OnInit {
               color: 'white',
             });
           }
-          this.router.navigate(['/student/login']);
+          this._router.navigate(['/student/login']);
         },
         error: (error) => {
           console.log('failed to send reset password', error);
         },
       });
+      this._subscription.add(forgetPasswordSubscription);
     }
   }
+
+  
 }

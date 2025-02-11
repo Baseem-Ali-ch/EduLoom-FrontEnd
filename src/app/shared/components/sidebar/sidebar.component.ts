@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import Swal from 'sweetalert2';
 import { AppState } from '../../../state/user/user.state';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../core/services/user/profile.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,13 +14,14 @@ import { ProfileService } from '../../../core/services/user/profile.service';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   user: any;
+  private _subscription: Subscription = new Subscription()
 
   constructor(
-    private router: Router,
-    private store: Store<AppState>,
-    private profileService: ProfileService
+    private _router: Router,
+    private s_tore: Store<AppState>,
+    private _profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
@@ -28,7 +30,7 @@ export class SidebarComponent implements OnInit {
 
   // display the user details
   loadUserData() {
-    this.profileService.getUser().subscribe({
+    const loadUserDataSubscription = this._profileService.getUser().subscribe({
       next: (response: any) => {
         this.user = response.user;
       },
@@ -36,11 +38,12 @@ export class SidebarComponent implements OnInit {
         console.error('Error loading user data:', error);
       },
     });
+    this._subscription.add(loadUserDataSubscription)
   }
 
   // get image url
   getImageUrl(photoUrl: string): string {
-    return this.profileService.getFullImageUrl(photoUrl);
+    return this._profileService.getFullImageUrl(photoUrl);
   }
 
   // logout
@@ -48,7 +51,7 @@ export class SidebarComponent implements OnInit {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('token');
 
-    this.router.navigate(['/student/login']);
+    this._router.navigate(['/student/login']);
     if (!localStorage.getItem('isLoggedIn')) {
       Swal.fire({
         icon: 'success',
@@ -74,5 +77,9 @@ export class SidebarComponent implements OnInit {
         color: 'white',
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 }

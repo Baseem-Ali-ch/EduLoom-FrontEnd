@@ -1,11 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/user/auth.service';
@@ -13,11 +8,8 @@ import Swal from 'sweetalert2';
 import { selectIsLoading } from '../../../state/user/user.selector';
 import { AppState } from '../../../state/user/user.state';
 import { login } from '../../../state/user/user.action';
-import {
-  SocialLoginModule,
-  SocialAuthService,
-  GoogleLoginProvider,
-} from '@abacritt/angularx-social-login';
+import { SocialLoginModule, SocialAuthService, GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import { Subscription } from 'rxjs';
 
 declare const google: any;
 
@@ -28,51 +20,52 @@ declare const google: any;
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   token!: string;
   isLoading: boolean = false;
   showPassword: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<AppState>,
-    private authService: AuthService,
-    private router: Router,
-    private socialAuthService: SocialAuthService
-  ) {
+  constructor(private _fb: FormBuilder, private _store: Store<AppState>, private _authService: AuthService, private _router: Router, private _socialAuthService: SocialAuthService) {
     // select the loading state
-    this.store
-      .select(selectIsLoading)
-      .subscribe((isLoading) => (this.isLoading = isLoading));
+    this._store.select(selectIsLoading).subscribe((isLoading) => (this.isLoading = isLoading));
   }
 
   ngOnInit(): void {
-    // login form validation
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    this.form();
 
     // prevent navigate login page after loggined
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/student/dashboard']);
+    if (this._authService.isLoggedIn()) {
+      this._router.navigate(['/student/dashboard']);
     }
 
     this.renderGoogleSignInButton();
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  // login form
+  form(): void {
+    this.loginForm = this._fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
   }
 
   // login submit function
   onLoginSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.store.dispatch(login({ email: email, password: password }));
-      this.authService.login(email, password).subscribe({
+      this._store.dispatch(login({ email: email, password: password }));
+      const loginSubscription = this._authService.login(email, password).subscribe({
         next: (res: any) => {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('token', res.token);
-            this.router.navigate(['/student/dashboard']);
+            this._router.navigate(['/student/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Login Successfull!',
@@ -114,6 +107,7 @@ export class LoginComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(loginSubscription);
     } else {
       console.log('no find email');
       this.loginForm.markAllAsTouched();
@@ -136,27 +130,24 @@ export class LoginComponent implements OnInit {
       callback: this.handleCredentialResponse.bind(this),
     });
 
-    google.accounts.id.renderButton(
-      document.getElementById('google-login-btn'),
-      {
-        theme: 'outline',
-        size: 'large',
-        text: 'continue_with',
-        shape: 'rectangular',
-      }
-    );
+    google.accounts.id.renderButton(document.getElementById('google-login-btn'), {
+      theme: 'outline',
+      size: 'large',
+      text: 'continue_with',
+      shape: 'rectangular',
+    });
 
-    google.accounts.id.prompt(); 
+    google.accounts.id.prompt();
   }
 
   handleCredentialResponse(response: any) {
     const idToken = response.credential;
 
-    this.authService.googleLogin({ token: idToken }).subscribe({
+    const googleLoginSubscription = this._authService.googleLogin({ token: idToken }).subscribe({
       next: (res) => {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/student/dashboard']);
+        this._router.navigate(['/student/dashboard']);
         Swal.fire({
           icon: 'success',
           title: 'Google Login Successful!',
@@ -184,6 +175,6 @@ export class LoginComponent implements OnInit {
         });
       },
     });
+    this._subscription.add(googleLoginSubscription);
   }
-  
 }

@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-change-password-modal',
@@ -15,7 +10,7 @@ import {
   styleUrl: './change-password-modal.component.css',
 })
 export class ChangePasswordModalComponent implements OnInit {
-  constructor(private fb: FormBuilder) {}
+  constructor(private _fb: FormBuilder) {}
 
   @Input() isPasswordOpen = false;
   @Input() userData: any = {};
@@ -25,26 +20,15 @@ export class ChangePasswordModalComponent implements OnInit {
   showPassword: boolean = false;
 
   ngOnInit(): void {
-    this.passwordForm = this.fb.group(
+    this.form()
+  }
+
+  // change password form
+  form(): void {
+    this.passwordForm = this._fb.group(
       {
-        currentPassword: [
-          '',
-          [
-            Validators.minLength(6),
-            Validators.pattern(
-              /(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/
-            ),
-          ],
-        ],
-        newPassword: [
-          '',
-          [
-            Validators.minLength(6),
-            Validators.pattern(
-              /(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/
-            ),
-          ],
-        ],
+        currentPassword: ['', [Validators.minLength(6), Validators.pattern(/(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/)]],
+        newPassword: ['', [Validators.minLength(6), Validators.pattern(/(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/)]],
         confirmPassword: ['', Validators.required],
       },
       { validators: this.matchPassword }

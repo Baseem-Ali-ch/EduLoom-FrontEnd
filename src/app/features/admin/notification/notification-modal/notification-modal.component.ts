@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { NotificationService } from '../../../../core/services/user/notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-notification-modal',
@@ -9,27 +10,33 @@ import { NotificationService } from '../../../../core/services/user/notification
   templateUrl: './notification-modal.component.html',
   styleUrl: './notification-modal.component.css',
 })
-export class NotificationModalComponent {
+export class NotificationModalComponent implements OnDestroy {
   @Input() isOpen = false;
   @Input() data: any = null;
 
   @Output() close = new EventEmitter<void>();
-  constructor(private notificationService: NotificationService) {}
+
+  private _subscription: Subscription = new Subscription()
+  constructor(private _notificationService: NotificationService) {}
+
+  // ng on destroy
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
 
   // update the notification status
   updateStatus(notification: any, status: string) {
-    this.notificationService
-      .updateNotificationStatus(notification._id, status)
-      .subscribe((updatedNotification) => {
-        notification.status = status;
+    const subscription = this._notificationService.updateNotificationStatus(notification._id, status).subscribe((updatedNotification) => {
+      notification.status = status;
 
-        if (status === 'accepted') {
-          this.notificationService
-            .sendAcceptanceEmail(notification.userId)
-            .subscribe(() => {
-              console.log('Email sent successfully');
-            });
-        }
-      });
+      if (status === 'accepted') {
+        this._notificationService.sendAcceptanceEmail(notification.userId).subscribe(() => {
+          console.log('Email sent successfully');
+        });
+      }
+    });
+    this._subscription.add(subscription)
   }
+
+  
 }

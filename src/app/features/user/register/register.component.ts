@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StateObservable, Store } from '@ngrx/store';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/user/auth.service';
@@ -14,9 +9,9 @@ import { register } from '../../../state/user/user.action';
 import { selectIsLoading } from '../../../state/user/user.selector';
 import { AppState } from '../../../state/user/user.state';
 import { User } from '../../../core/models/IUser';
+import { Subscription } from 'rxjs';
 
 declare const google: any;
-
 
 @Component({
   selector: 'app-register',
@@ -25,50 +20,42 @@ declare const google: any;
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   registerForm!: FormGroup;
   isLoading: boolean = false;
   showPassword: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<AppState>,
-    private authService: AuthService,
-    private router: Router
-  ) {
+  constructor(private _fb: FormBuilder, private _store: Store<AppState>, private _authService: AuthService, private _router: Router) {
     // select the loading state
-    this.store
-      .select(selectIsLoading)
-      .subscribe((isLoading) => (this.isLoading = isLoading));
+    this._store.select(selectIsLoading).subscribe((isLoading) => (this.isLoading = isLoading));
   }
 
   ngOnInit(): void {
-    // register form validation
-    this.registerForm = this.fb.group(
+    this.form();
+    // prevent navigate register page after loggined
+    if (this._authService.isLoggedIn()) {
+      this._router.navigate(['/student/dashboard']);
+    }
+
+    this.renderGoogleSignInButton();
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  // registration form
+  form(): void {
+    this.registerForm = this._fb.group(
       {
         userName: ['', [Validators.required, Validators.minLength(5)]],
         email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.pattern(
-              /(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/
-            ),
-          ],
-        ],
+        password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/)]],
         confirmPassword: ['', [Validators.required]],
       },
       { validators: this.matchPassword }
     );
-
-    // prevent navigate register page after loggined
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/student/dashboard']);
-    }
-
-    this.renderGoogleSignInButton();
   }
 
   // password match function
@@ -81,19 +68,17 @@ export class RegisterComponent implements OnInit {
   // register submit
   onSubmit(): void {
     const { userName, email, password } = this.registerForm.value;
-    this.store.dispatch(
-      register({ userName: userName, email: email, password: password })
-    );
+    this._store.dispatch(register({ userName: userName, email: email, password: password }));
     if (this.registerForm.valid) {
       console.log('registration dispatched : ', this.registerForm.value);
-      this.authService.register(this.registerForm.value).subscribe({
+      const onSubmitSubscription = this._authService.register(this.registerForm.value).subscribe({
         next: (res: Response) => {
           const email = this.registerForm.value.email;
           if (res) {
             localStorage.setItem('email', email);
 
             // navigate the otp page and send the sate
-            this.router.navigate([`/student/otp-verify/${email}`]);
+            this._router.navigate([`/student/otp-verify/${email}`]);
 
             Swal.fire({
               icon: 'success',
@@ -136,6 +121,7 @@ export class RegisterComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(onSubmitSubscription);
     } else {
       this.registerForm.markAllAsTouched();
     }
@@ -153,20 +139,16 @@ export class RegisterComponent implements OnInit {
     }
 
     google.accounts.id.initialize({
-      client_id:
-        '608019199691-eelbp162ca7ckpck9ukqthqi9jp993k1.apps.googleusercontent.com',
+      client_id: '608019199691-eelbp162ca7ckpck9ukqthqi9jp993k1.apps.googleusercontent.com',
       callback: this.handleCredentialResponse.bind(this),
     });
 
-    google.accounts.id.renderButton(
-      document.getElementById('google-login-btn'),
-      {
-        theme: 'outline',
-        size: 'large',
-        text: 'continue_with',
-        shape: 'rectangular',
-      }
-    );
+    google.accounts.id.renderButton(document.getElementById('google-login-btn'), {
+      theme: 'outline',
+      size: 'large',
+      text: 'continue_with',
+      shape: 'rectangular',
+    });
 
     google.accounts.id.prompt();
   }
@@ -174,11 +156,11 @@ export class RegisterComponent implements OnInit {
   handleCredentialResponse(response: any) {
     const idToken = response.credential;
 
-    this.authService.googleLogin({ token: idToken }).subscribe({
+    const googleRegisterSubscription = this._authService.googleLogin({ token: idToken }).subscribe({
       next: (res) => {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/student/dashboard']);
+        this._router.navigate(['/student/dashboard']);
         Swal.fire({
           icon: 'success',
           title: 'Google Login Successful!',
@@ -206,5 +188,6 @@ export class RegisterComponent implements OnInit {
         });
       },
     });
+    this._subscription.add(googleRegisterSubscription);
   }
 }

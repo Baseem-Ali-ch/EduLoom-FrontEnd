@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/user/user.state';
 import { ProfileService } from '../../../core/services/user/profile.service';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -13,13 +14,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './admin-sidebar.component.html',
   styleUrl: './admin-sidebar.component.css',
 })
-export class AdminSidebarComponent implements OnInit{
+export class AdminSidebarComponent implements OnInit, OnDestroy{
   user: any;
+  private _subscription: Subscription = new Subscription()
 
   constructor(
-    private router: Router,
-    private store: Store<AppState>,
-    private profileService: ProfileService
+    private _router: Router,
+    private _store: Store<AppState>,
+    private _profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
@@ -28,7 +30,7 @@ export class AdminSidebarComponent implements OnInit{
 
   // display the user details
   loadUserData() {
-    this.profileService.getUser().subscribe({
+    const loadUserDataSubscription = this._profileService.getUser().subscribe({
       next: (response: any) => {
         this.user = response.user;
       },
@@ -36,17 +38,19 @@ export class AdminSidebarComponent implements OnInit{
         console.error('Error loading user data:', error);
       },
     });
+    this._subscription.add(loadUserDataSubscription)
   }
 
   // get image url
   getImageUrl(photoUrl: string): string {
-    return this.profileService.getFullImageUrl(photoUrl);
+    return this._profileService.getFullImageUrl(photoUrl);
   }
 
   // logout
   onLogout() {
     localStorage.removeItem('isLoggedIn');
-    this.router.navigate(['/admin/login']);
+    localStorage.removeItem('token');
+    this._router.navigate(['/admin/login']);
     if (!localStorage.getItem('isLoggedIn')) {
       Swal.fire({
         icon: 'success',
@@ -72,5 +76,9 @@ export class AdminSidebarComponent implements OnInit{
         color: 'white',
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 }

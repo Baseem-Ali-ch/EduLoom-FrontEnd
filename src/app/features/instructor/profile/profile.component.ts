@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../core/services/instructor/profile.service';
 import Swal from 'sweetalert2';
 import { InstructorSidebarComponent } from '../../../shared/components/instructor-sidebar/instructor-sidebar.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -13,21 +14,26 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   instructor: any;
   isModalOpen: boolean = false;
   isInstructorModalOpen: boolean = false;
   isChangePasswordModalOpen: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(private profileService: ProfileService) {}
+  constructor(private _profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.loadInstructorData();
   }
 
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
   // display the user details
   loadInstructorData() {
-    this.profileService.getInstructor().subscribe({
+    const loadInstructorDataSubscription = this._profileService.getInstructor().subscribe({
       next: (response: any) => {
         this.instructor = response.instructor;
       },
@@ -35,6 +41,7 @@ export class ProfileComponent implements OnInit {
         console.error('Error loading user data:', error);
       },
     });
+    this._subscription.add(loadInstructorDataSubscription);
   }
 
   // image file select
@@ -44,7 +51,7 @@ export class ProfileComponent implements OnInit {
       const formData = new FormData();
       formData.append('profilePhoto', file);
 
-      this.profileService.uploadProfilePhoto(formData).subscribe({
+      const fileSubscription = this._profileService.uploadProfilePhoto(formData).subscribe({
         next: (response) => {
           this.instructor.profilePhoto = response.photoUrl;
           Swal.fire({
@@ -74,12 +81,13 @@ export class ProfileComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(fileSubscription);
     }
   }
 
   // get image url
   getImageUrl(photoUrl: string): string {
-    return this.profileService.getFullImageUrl(photoUrl);
+    return this._profileService.getFullImageUrl(photoUrl);
   }
 
   // open modal
@@ -104,7 +112,7 @@ export class ProfileComponent implements OnInit {
 
   // update user details
   saveChanges(updatedData: any) {
-    this.profileService.updateUser(updatedData).subscribe({
+    this._profileService.updateUser(updatedData).subscribe({
       next: (response: any) => {
         this.loadInstructorData();
         this.closeModal();
@@ -161,37 +169,37 @@ export class ProfileComponent implements OnInit {
     this.isChangePasswordModalOpen = false;
   }
 
-   // save new password
-    savePassword(passwordData: any) {
-      this.profileService.changePassword(passwordData).subscribe({
-        next: (response: any) => {
-          this.closeChangePassword();
-          if (response) {
-            Swal.fire({
-              icon: 'success',
-              title: response.message || 'Password changed successfully',
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              background: 'rgb(8, 10, 24)',
-              color: 'white',
-            });
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: response.message || 'Error change password',
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              background: 'rgb(8, 10, 24)',
-              color: 'white',
-            });
-          }
-        },
-      });
-    }
+  // save new password
+  savePassword(passwordData: any) {
+    this._profileService.changePassword(passwordData).subscribe({
+      next: (response: any) => {
+        this.closeChangePassword();
+        if (response) {
+          Swal.fire({
+            icon: 'success',
+            title: response.message || 'Password changed successfully',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: response.message || 'Error change password',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        }
+      },
+    });
+  }
 }

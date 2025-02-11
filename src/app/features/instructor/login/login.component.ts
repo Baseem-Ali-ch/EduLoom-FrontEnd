@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppState } from '../../../state/user/user.state';
 import { Store } from '@ngrx/store';
@@ -6,51 +6,55 @@ import { AuthService } from '../../../core/services/instructor/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   token!: string;
   isLoading: boolean = false;
   showPassword: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<AppState>,
-    private authService: AuthService,
-    private router: Router
-  ) {
-  }
+  constructor(private _fb: FormBuilder, private _store: Store<AppState>, private _authService: AuthService, private _router: Router) {}
 
   ngOnInit(): void {
-    // login form validation
-    this.loginForm = this.fb.group({
+    this.form();
+
+    // prevent navigate login page after loggined
+    if (this._authService.isLoggedIn()) {
+      this._router.navigate(['/instructor/dashboard']);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  // login form
+  form(): void {
+    this.loginForm = this._fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-
-    // prevent navigate login page after loggined
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/instructor/dashboard']);
-    }
   }
 
   // login submit function
   onLoginSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.authService.login(email, password).subscribe({
+      const loginSubscription = this._authService.login(email, password).subscribe({
         next: (res: any) => {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('token', res.token);
-            this.router.navigate(['/instructor/dashboard']);
+            this._router.navigate(['/instructor/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Login Successfull!',
@@ -92,6 +96,7 @@ export class LoginComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(loginSubscription);
     } else {
       console.log('no find email');
       this.loginForm.markAllAsTouched();
@@ -102,4 +107,3 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 }
-

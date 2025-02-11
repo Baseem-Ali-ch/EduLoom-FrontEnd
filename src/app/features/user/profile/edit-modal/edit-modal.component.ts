@@ -7,38 +7,41 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './edit-modal.component.html',
-  styleUrl: './edit-modal.component.css'
+  styleUrl: './edit-modal.component.css',
 })
-export class EditModalComponent implements OnInit{
-  @Input() isOpen = false
-  @Input() userData : any = {}
-  @Output() close = new EventEmitter<void>()
-  @Output() save = new EventEmitter<any>()
-  updateProfileForm!: FormGroup
+export class EditModalComponent implements OnInit {
+  @Input() isOpen = false;
+  @Input() userData: any = {};
+  @Output() close = new EventEmitter<void>();
+  @Output() save = new EventEmitter<any>();
+  updateProfileForm!: FormGroup;
 
-  constructor(private fb:FormBuilder){}
+  constructor(private _fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.updateProfileForm = this.fb.group({
-      userName: ['',[Validators.minLength(5)]],
-      phone: ['', [Validators.minLength(10), Validators.maxLength(10)]]
-    })
+    this.form()
   }
 
-  ngOnChanges(){
-    if(this.userData){
+  // update user details form
+  form(): void {
+    this.updateProfileForm = this._fb.group({
+      userName: ['', [Validators.minLength(5)]],
+      phone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
+    });
+  }
+
+  ngOnChanges() {
+    if (this.userData) {
       this.updateProfileForm.patchValue({
-        userName : this.userData.userName,
-        phone: this.userData.phone
-      })
+        userName: this.userData.userName,
+        phone: this.userData.phone,
+      });
     }
   }
-  
 
   onSubmit(): void {
     if (this.updateProfileForm.valid) {
       this.save.emit(this.updateProfileForm.value);
     }
   }
-
 }

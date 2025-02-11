@@ -10,38 +10,38 @@ export class AuthService {
   loggedIn: boolean = false;
   private userSubject = new BehaviorSubject<any>(null);
 
-  private apiUrl = 'http://localhost:3001';
+  private _apiUrl = 'http://localhost:3001';
 
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
 
   // reigster
   register(user: User): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/register`, { user });
+    return this._http.post(`${this._apiUrl}/student/register`, { user });
   }
 
   // verify otp
   verifyOtp(email: string, otp: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/verify-otp`, { email, otp });
+    return this._http.post(`${this._apiUrl}/student/verify-otp`, { email, otp });
   }
 
   // resend otp
   resendOtp(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/resend-otp`, { email });
+    return this._http.post(`${this._apiUrl}/student/resend-otp`, { email });
   }
 
   // login
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/login`, { email, password });
+    return this._http.post(`${this._apiUrl}/student/login`, { email, password });
   }
 
   // forget password
   forgetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/forget-password`, { email });
+    return this._http.post(`${this._apiUrl}/student/forget-password`, { email });
   }
 
   //reset password
   resetPassword(password: string, token: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/reset-password`, {
+    return this._http.post(`${this._apiUrl}/student/reset-password`, {
       password,
       token,
     });
@@ -52,7 +52,7 @@ export class AuthService {
     token: string;
     
   }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/student/google-auth`, googleData);
+    return this._http.post(`${this._apiUrl}/student/google-auth`, googleData);
   }
 
   // get token from session

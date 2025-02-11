@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-instructor-req',
@@ -22,17 +17,22 @@ export class InstructorReqComponent implements OnInit {
   instructorDetailsForm!: FormGroup;
   email: string = '';
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private _fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.instructorDetailsForm = this.fb.group({
+    this.fomr()
+  }
+
+  // become an instructor form
+  fomr(): void {
+    this.instructorDetailsForm = this._fb.group({
       userName: ['', [Validators.required, Validators.minLength(5)]],
       // email: ['', [Validators.required, Validators.email]],
       phone: [
         '',
         [
           Validators.required,
-          Validators.pattern('^[0-9]{10}$'), // Better pattern for phone numbers
+          Validators.pattern('^[0-9]{10}$'), 
         ],
       ],
       place: ['', [Validators.required]],
@@ -44,8 +44,6 @@ export class InstructorReqComponent implements OnInit {
       linkedinProfile: [''],
     });
   }
-
-
 
   onSubmit(): void {
     if (this.instructorDetailsForm.valid) {

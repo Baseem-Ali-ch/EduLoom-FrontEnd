@@ -1,12 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-modal',
@@ -22,10 +16,15 @@ export class EditModalComponent implements OnInit {
   @Output() save = new EventEmitter<any>();
   updateProfileForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private _fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.updateProfileForm = this.fb.group({
+    this.form()
+  }
+
+  // update profile form
+  form(): void {
+    this.updateProfileForm = this._fb.group({
       userName: ['', [Validators.required, Validators.minLength(5)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       place: ['', [Validators.required]],
@@ -50,10 +49,10 @@ export class EditModalComponent implements OnInit {
     }
   }
 
+  // submit the updated form details
   onSubmit(): void {
     if (this.updateProfileForm.valid) {
       console.log('update profle', this.updateProfileForm);
-
       this.save.emit(this.updateProfileForm.value);
     } else {
       console.log('invalid form');

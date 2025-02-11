@@ -1,16 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../core/services/user/auth.service';
 import { registerSuccess } from '../../../state/user/user.action';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-otp',
@@ -19,7 +15,7 @@ import { registerSuccess } from '../../../state/user/user.action';
   templateUrl: './otp.component.html',
   styleUrl: './otp.component.css',
 })
-export class OtpComponent implements OnInit {
+export class OtpComponent implements OnInit, OnDestroy {
   otpForm!: FormGroup;
   email!: string | null;
   isExpired: boolean = false;
@@ -27,41 +23,47 @@ export class OtpComponent implements OnInit {
   remainingTime = 60;
   token!: string;
   user: any;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store,
-    private route: ActivatedRoute,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private _fb: FormBuilder, private _store: Store, private _route: ActivatedRoute, private _authService: AuthService, private _router: Router) {}
 
   ngOnInit(): void {
-    this.otpForm = this.fb.group({
-      otp: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    this.form();
+
     this.startTimer();
 
     // retrive the email in params
-    this.route.params.subscribe((params) => {
+    this._route.params.subscribe((params) => {
       this.email = params['email'];
     });
 
     // prevent navigate otp page after loggined
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/student/dashboard']);
+    if (this._authService.isLoggedIn()) {
+      this._router.navigate(['/student/dashboard']);
     }
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  // otp verification form
+  form(): void {
+    this.otpForm = this._fb.group({
+      otp: ['', [Validators.required, Validators.minLength(6)]],
+    });
   }
 
   // verify otp handling
   verifyOTP(): void {
     if (this.otpForm.valid && this.email) {
       const { otp } = this.otpForm.value;
-      this.authService.verifyOtp(this.email, otp).subscribe({
+      const verifyOtpSubscription = this._authService.verifyOtp(this.email, otp).subscribe({
         next: (res: any) => {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true');
-            this.router.navigate(['/student/dashboard']);
+            localStorage.setItem('token', res.token);
+            this._router.navigate(['/student/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Registration Successfull!',
@@ -103,6 +105,7 @@ export class OtpComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(verifyOtpSubscription);
     } else {
       console.log('no find email');
       this.otpForm.markAllAsTouched();
@@ -112,7 +115,7 @@ export class OtpComponent implements OnInit {
   // resend otp function handling
   resendOTP(): void {
     if (this.isExpired && this.email) {
-      this.authService.resendOtp(this.email).subscribe({
+      const resendOtpSubscription = this._authService.resendOtp(this.email).subscribe({
         next: (res: any) => {
           // Restart the timer after sending a new OTP
           this.startTimer();
@@ -121,6 +124,7 @@ export class OtpComponent implements OnInit {
           console.log('Error while resending OTP', error);
         },
       });
+      this._subscription.add(resendOtpSubscription);
     } else {
       console.log('Please wait until the timer expires.');
     }
@@ -139,4 +143,6 @@ export class OtpComponent implements OnInit {
       }
     }, 1000);
   }
+
+ 
 }

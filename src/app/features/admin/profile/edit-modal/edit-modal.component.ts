@@ -16,10 +16,16 @@ export class EditModalComponent implements OnInit {
   @Output() save = new EventEmitter<any>();
   updateProfileForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private _fb: FormBuilder) {}
 
+  // ng on init
   ngOnInit(): void {
-    this.updateProfileForm = this.fb.group({
+    this.form()
+  }
+
+  // update profile form
+  form(): void {
+    this.updateProfileForm = this._fb.group({
       userName: ['', [Validators.minLength(5)]],
       phone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
     });
@@ -34,6 +40,7 @@ export class EditModalComponent implements OnInit {
     }
   }
 
+  // sumbit the edited details
   onSubmit(): void {
     if (this.updateProfileForm.valid) {
       this.save.emit(this.updateProfileForm.value);

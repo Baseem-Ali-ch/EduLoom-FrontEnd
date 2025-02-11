@@ -7,10 +7,10 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './change-password.component.html',
-  styleUrl: './change-password.component.css'
+  styleUrl: './change-password.component.css',
 })
-export class ChangePasswordComponent implements OnInit{
-constructor(private fb: FormBuilder) {}
+export class ChangePasswordComponent implements OnInit {
+  constructor(private _fb: FormBuilder) {}
 
   @Input() isPasswordOpen = false;
   @Input() userData: any = {};
@@ -20,26 +20,15 @@ constructor(private fb: FormBuilder) {}
   showPassword: boolean = false;
 
   ngOnInit(): void {
-    this.passwordForm = this.fb.group(
+    this.form();
+  }
+
+  // password change form
+  form(): void {
+    this.passwordForm = this._fb.group(
       {
-        currentPassword: [
-          '',
-          [
-            Validators.minLength(6),
-            Validators.pattern(
-              /(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/
-            ),
-          ],
-        ],
-        newPassword: [
-          '',
-          [
-            Validators.minLength(6),
-            Validators.pattern(
-              /(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/
-            ),
-          ],
-        ],
+        currentPassword: ['', [Validators.minLength(6), Validators.pattern(/(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/)]],
+        newPassword: ['', [Validators.minLength(6), Validators.pattern(/(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/)]],
         confirmPassword: ['', Validators.required],
       },
       { validators: this.matchPassword }

@@ -10,9 +10,9 @@ import { RouterModule } from '@angular/router';
   styleUrl: './notfound.component.css',
 })
 export class NotfoundComponent {
-  constructor(private location: Location) {}
+  constructor(private _location: Location) {}
 
   goBack(): void {
-    this.location.back();
+    this._location.back();
   }
 }

@@ -8,13 +8,13 @@ import { Observable } from 'rxjs';
 export class AuthService {
   loggedIn: boolean = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
 
-  private apiUrl = 'http://localhost:3001';
+  private _apiUrl = 'http://localhost:3001';
 
   // login
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/admin/login`, { email, password });
+    return this._http.post(`${this._apiUrl}/admin/login`, { email, password });
   }
 
   // get token from session

@@ -1,0 +1,340 @@
+<div class="flex h-screen">
+    <!-- Sidebar -->
+    <app-instructor-sidebar></app-instructor-sidebar>
+
+    <!-- Home Content -->
+    <section class="flex-1 h-screen overflow-y-auto bg-slate-900 p-6">
+        <!-- Banner -->
+        <div class="container mx-auto">
+            <h1 class="flex items-center space-x-4 text-2xl font-semibold capitalize lg:text-3xl text-white">
+                <!-- Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-house"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
+                </svg>
+                <span>Create Course</span>
+            </h1>
+        </div>
+
+        <!-- Courses Grid -->
+        <div class="container mx-auto mt-6">
+            <!-- course-create.component.html -->
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <!-- Stepper Header -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between w-full">
+                        <!-- Step 1 -->
+                        <div class="flex flex-col items-center text-white">
+                            <div [ngClass]="currentStep >= 1 ? 'bg-blue-500' : 'bg-gray-300'"
+                                class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold">
+                                1
+                            </div>
+                            <span class="text-sm mt-2">Basic Info</span>
+                        </div>
+
+                        <!-- Connector -->
+                        <div class="flex-1 h-1 mx-2" [ngClass]="currentStep > 1 ? 'bg-blue-500' : 'bg-gray-300'"></div>
+
+                        <!-- Step 2 -->
+                        <div class="flex flex-col items-center text-white">
+                            <div [ngClass]="currentStep >= 2 ? 'bg-blue-500' : 'bg-gray-300'"
+                                class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold">
+                                2
+                            </div>
+                            <span class="text-sm mt-2">Module Info</span>
+                        </div>
+
+                        <!-- Connector -->
+                        <div class="flex-1 h-1 mx-2" [ngClass]="currentStep > 2 ? 'bg-blue-500' : 'bg-gray-300'"></div>
+
+                        <!-- Step 3 -->
+                        <div class="flex flex-col items-center text-white">
+                            <div [ngClass]="currentStep >= 3 ? 'bg-blue-500' : 'bg-gray-300'"
+                                class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold">
+                                3
+                            </div>
+                            <span class="text-sm mt-2">Content Info</span>
+                        </div>
+
+                        <!-- Connector -->
+                        <div class="flex-1 h-1 mx-2" [ngClass]="currentStep > 3 ? 'bg-blue-500' : 'bg-gray-300'"></div>
+
+                        <!-- Step 4 -->
+                        <div class="flex flex-col items-center text-white">
+                            <div [ngClass]="currentStep === 4 ? 'bg-blue-500' : 'bg-gray-300'"
+                                class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold">
+                                4
+                            </div>
+                            <span class="text-sm mt-2">Pricing</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Form Content -->
+                <form [formGroup]="courseForm" class=" shadow-md p-6 ">
+                    <!-- Step 1 Content -->
+                    <div *ngIf="currentStep === 1">
+                        <h2 class="text-2xl font-semibold mb-6 text-white">Course Basic Information</h2>
+
+                        <!-- Title -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-white mb-2">
+                                Course Title
+                            </label>
+                            <input type="text" formControlName="title"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
+                                placeholder="Enter course title">
+                            <div *ngIf="courseForm.get('title')?.touched && courseForm.get('title')?.invalid"
+                                class="text-red-500 text-sm mt-1">
+                                Title is required
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-white mb-2">
+                                Description
+                            </label>
+                            <textarea formControlName="description" rows="4"
+                                class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Enter course description"></textarea>
+                            <div *ngIf="courseForm.get('description')?.touched && courseForm.get('description')?.invalid"
+                                class="text-red-500 text-sm mt-1">
+                                Description is required
+                            </div>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-white mb-2">
+                                Category
+                            </label>
+                            <select formControlName="category"
+                                class="w-full px-3 bg-gray-900 text-gray-300 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select a category</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                            <div *ngIf="courseForm.get('category')?.touched && courseForm.get('category')?.invalid"
+                                class="text-red-500 text-sm mt-1">
+                                Category is required
+                            </div>
+                        </div>
+
+                        <!-- Difficulty Level -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-white mb-2">
+                                Difficulty Level
+                            </label>
+                            <select formControlName="difficultyLevel"
+                                class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select difficulty level</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                            <div *ngIf="courseForm.get('difficultyLevel')?.touched && courseForm.get('difficultyLevel')?.invalid"
+                                class="text-red-500 text-sm mt-1">
+                                Difficulty level is required
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 Content -->
+                    <div *ngIf="currentStep === 2">
+                        <h2 class="text-2xl font-semibold mb-6 text-white">Module Creation</h2>
+
+                        <!-- Module Title & Add Module Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <input type="text" formControlName="moduleTitle"
+                                class="w-[43rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
+                                placeholder="Enter Module Title">
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                                Module
+                            </button>
+                        </div>
+
+
+                        <!-- Lesson Title, Select Module & Add Lesson Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <input type="text" formControlName="lessonTitle"
+                                class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
+                                placeholder="Enter Lesson Title">
+                            <select formControlName="moduleSelection"
+                                class="w-[20.1rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                                <option value="">Select Module</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                                Lesson
+                            </button>
+                        </div>
+
+                        <!-- Upload Content, Select Lesson & Add Content Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <input type="file" formControlName="uploadContent"
+                                class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                            <select formControlName="lessonSelection"
+                                class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                                <option value="">Select Lesson</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                                Content
+                            </button>
+                        </div>
+
+                        <!-- Display Added Content -->
+                        <div class="mt-6">
+                            <h3 class="text-xl font-semibold text-white mb-4">Added Content</h3>
+                            <!-- <ul class="text-gray-300">
+                                <li *ngFor="let content of addedContents" class="mb-2 border p-2 rounded-md bg-gray-800">
+                                    {{ content }}
+                                </li>
+                            </ul> -->
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Content -->
+                    <div *ngIf="currentStep === 3">
+                        <h2 class="text-2xl font-semibold mb-6 text-white">Creation</h2>
+
+                        <!-- Module Title & Add Module Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <select formControlName="moduleSelection"
+                                class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                                <option value="">Select Assignments</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                                Assignment
+                            </button>
+                        </div>
+
+
+                        <!-- Lesson Title, Select Module & Add Lesson Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <select formControlName="moduleSelection"
+                                class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                                <option value="">Select Quizzes</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                                Quiz
+                            </button>
+                        </div>
+
+                        <!-- Upload Content, Select Lesson & Add Content Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <select formControlName="lessonSelection"
+                                class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                                <option value="">Select Live Class</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                                Live Class
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 Content -->
+                    <div *ngIf="currentStep === 4">
+                        <h2 class="text-2xl font-semibold mb-6 text-white">Pricing</h2>
+
+                        <div class="mb-6 flex items-center space-x-4">
+                            <input type="text" formControlName="moduleTitle"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
+                                placeholder="Enter Module Title">
+                        </div>
+
+                        <!-- Lesson Title, Select Module & Add Lesson Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <select formControlName="moduleSelection"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                                <option value="">Select Offer</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                        </div>
+
+                        <!-- Upload Content, Select Lesson & Add Content Button -->
+                        <div class="mb-6 flex items-center space-x-4">
+                            <select formControlName="lessonSelection"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
+                                <option value="">Select Coupon</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button *ngIf="currentStep > 1" (click)="previousStep()" type="button"
+                            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                            Previous
+                        </button>
+                        <button *ngIf="currentStep < totalSteps" (click)="nextStep()" type="button"
+                            class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            Next
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

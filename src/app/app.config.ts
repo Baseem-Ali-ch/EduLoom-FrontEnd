@@ -16,6 +16,7 @@ import {
   SocialAuthServiceConfig,
   SocialLoginModule,
 } from '@abacritt/angularx-social-login';
+import { ReactiveFormsModule } from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,5 +39,6 @@ export const appConfig: ApplicationConfig = {
         ],
       } as SocialAuthServiceConfig,
     },
+    ReactiveFormsModule
   ],
 };

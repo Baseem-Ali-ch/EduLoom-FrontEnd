@@ -17,6 +17,31 @@
 
 
         <div class="container px-6 py-10 mx-auto">
+
+            <div class="flex justify-end items-center mt-4 gap-x-3">
+                <!-- Select Dropdown for Filtering Users by Status -->
+                <select [(ngModel)]="selectedStatus" (change)="filterInstructor()"
+                    class="px-4 py-2 text-sm border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+
+                <!-- Search Input -->
+                <div class="relative flex items-center">
+                    <span class="absolute left-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-gray-600">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                    </span>
+                    <input type="text" [(ngModel)]="searchTerm" (input)="filterInstructor()" placeholder="Search users"
+                        class="block w-full md:w-80 py-1.5 pr-5 pl-10 text-gray-700 border border-gray-200 rounded-lg placeholder-gray-400/70 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                </div>
+            </div>
+
+
             <div class="flex flex-col mt-6">
                 <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -38,6 +63,11 @@
                                         </th>
 
                                         <th scope="col"
+                                            class="px-12 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                            Phone
+                                        </th>
+
+                                        <th scope="col"
                                             class="px-4 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                             Status
                                         </th>
@@ -48,7 +78,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                                    <tr *ngFor="let instructor of allInstructors">
+                                    <tr *ngFor="let instructor of filteredInstructors">
                                         <td class="px-4 py-4 text-md font-normal whitespace-nowrap">
                                             <div>
                                                 <h2 class="font-medium text-gray-800 dark:text-white ">
@@ -62,6 +92,18 @@
                                                     {{instructor.email}}
                                                 </h2>
                                             </div>
+                                        </td>
+                                        <td class="px-12 py-4 text-md font-normal whitespace-nowrap">
+                                            <div *ngIf="instructor.phone; else dashText">
+                                                <h2 class="font-medium text-white ">{{instructor?.phone}}
+                                                </h2>
+                                            </div>
+                                            <ng-template #dashText>
+                                                <div>
+                                                    <h2 class="font-medium text-white ">N/A
+                                                    </h2>
+                                                </div>
+                                            </ng-template>
                                         </td>
                                         <td class="px-4 py-4 text-md whitespace-nowrap">
                                             <div *ngIf="instructor.isActive; else falseStatus"
@@ -79,13 +121,13 @@
                                         <td class="px-4 py-4 text-sm whitespace-nowrap">
                                             <div class="flex items-center gap-x-6">
                                                 <button *ngIf="instructor.isActive; else inactiveTemplate"
-                                                    (click)="updateStatus(false)"
+                                                    (click)="updateStatus(instructor._id, false)"
                                                     class="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600">
                                                     Suspend
                                                 </button>
 
                                                 <ng-template #inactiveTemplate>
-                                                    <button (click)="updateStatus(true)"
+                                                    <button (click)="updateStatus(instructor._id, true)"
                                                         class="px-2 py-1 text-sm  bg-green-500 text-white rounded-md hover:bg-green-600">
                                                         Activate
                                                     </button>

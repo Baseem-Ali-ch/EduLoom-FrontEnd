@@ -1,16 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppState } from '../../../state/user/user.state';
 import { Store } from '@ngrx/store';
 import { AuthService } from '../../../core/services/instructor/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -19,17 +15,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   registerForm!: FormGroup;
   isLoading: boolean = false;
   showPassword: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<AppState>,
-    private authService: AuthService,
-    private router: Router
-  ) {
+  constructor(private _fb: FormBuilder, private _store: Store<AppState>, private _authService: AuthService, private _router: Router) {
     // select the loading state
     // this.store
     //   .select(selectIsLoading)
@@ -37,30 +29,25 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // register form validation
-    this.registerForm = this.fb.group(
+    this.form();
+    
+    // prevent navigate register page after loggined
+    if (this._authService.isLoggedIn()) {
+      this._router.navigate(['/user/dashboard']);
+    }
+  }
+
+  // registration form
+  form(): void {
+    this.registerForm = this._fb.group(
       {
         userName: ['', [Validators.required, Validators.minLength(5)]],
         email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.pattern(
-              /(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/
-            ),
-          ],
-        ],
+        password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/)]],
         confirmPassword: ['', [Validators.required]],
       },
       { validators: this.matchPassword }
     );
-
-    // prevent navigate register page after loggined
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/user/dashboard']);
-    }
   }
 
   // password match function
@@ -72,11 +59,11 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      this.authService.register(this.registerForm.value).subscribe({
+      const onSubmitSubscription = this._authService.register(this.registerForm.value).subscribe({
         next: (res: any) => {
           if (res) {
             localStorage.setItem('token', res.token);
-            this.router.navigate(['/instructor/dashboard'])
+            this._router.navigate(['/instructor/dashboard']);
             Swal.fire({
               icon: 'success',
               title: 'Registered Successfully',
@@ -118,6 +105,7 @@ export class RegisterComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(onSubmitSubscription);
     } else {
       this.registerForm.markAllAsTouched();
     }
@@ -125,5 +113,9 @@ export class RegisterComponent implements OnInit {
 
   togglePassword() {
     this.showPassword = !this.showPassword;
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 }

@@ -1,14 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/admin/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -17,41 +13,48 @@ import Swal from 'sweetalert2';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class AdminLoginComponent implements OnInit {
+export class AdminLoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   token!: string;
   isLoading: boolean = false;
   showPassword: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private adminAuthService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private _fb: FormBuilder, private _adminAuthService: AuthService, private _router: Router) {}
 
+  // ng on init
   ngOnInit(): void {
-    // login form validation
-    this.loginForm = this.fb.group({
+    this.form();
+
+    // prevent navigate login page after loggined
+    if (this._adminAuthService.isLoggedIn()) {
+      this._router.navigate(['/admin/dashboard']);
+    }
+  }
+  
+  // ng on destroy
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  // login form
+  form(): void {
+    this.loginForm = this._fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-
-    // prevent navigate login page after loggined
-    if (this.adminAuthService.isLoggedIn()) {
-      this.router.navigate(['/admin/dashboard']);
-    }
   }
 
   // login submit function
   onLoginSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.adminAuthService.login(email, password).subscribe({
+      const adminAuthServiceSubscription = this._adminAuthService.login(email, password).subscribe({
         next: (res: any) => {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('token', res.token);
-            this.router.navigate(['/admin/dashboard']);
+            this._router.navigate(['/admin/dashboard']);
             Swal.fire({
               icon: 'success',
               title: res.message || 'Login Successfull!',
@@ -93,6 +96,7 @@ export class AdminLoginComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(adminAuthServiceSubscription);
     } else {
       console.log('no find email');
       this.loginForm.markAllAsTouched();

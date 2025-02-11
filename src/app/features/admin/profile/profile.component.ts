@@ -1,39 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ProfileService } from '../../../core/services/admin/profile.service';
 import Swal from 'sweetalert2';
 import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { CommonModule } from '@angular/common';
 import { ChangePasswordModalComponent } from './change-password-modal/change-password-modal.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [
-    AdminSidebarComponent,
-    EditModalComponent,
-    ChangePasswordModalComponent,
-    CommonModule,
-  ],
+  imports: [AdminSidebarComponent, EditModalComponent, ChangePasswordModalComponent, CommonModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   user: any;
   instructor: any;
   isModalOpen: boolean = false;
   isInstructorModalOpen: boolean = false;
   isChangePasswordModalOpen: boolean = false;
+  private _subscription: Subscription = new Subscription();
 
-  constructor(private profileService: ProfileService) {}
+  constructor(private _profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.loadUserData();
   }
 
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
   // display the user details
   loadUserData() {
-    this.profileService.getUser().subscribe({
+    const loadUserSubscription = this._profileService.getUser().subscribe({
       next: (response: any) => {
         this.user = response.user;
       },
@@ -41,6 +42,7 @@ export class ProfileComponent implements OnInit {
         console.error('Error loading user data:', error);
       },
     });
+    this._subscription.add(loadUserSubscription);
   }
 
   // image file select
@@ -50,7 +52,7 @@ export class ProfileComponent implements OnInit {
       const formData = new FormData();
       formData.append('profilePhoto', file);
 
-      this.profileService.uploadProfilePhoto(formData).subscribe({
+      const fileSubscription = this._profileService.uploadProfilePhoto(formData).subscribe({
         next: (response) => {
           this.user.profilePhoto = response.photoUrl;
           Swal.fire({
@@ -80,12 +82,13 @@ export class ProfileComponent implements OnInit {
           });
         },
       });
+      this._subscription.add(fileSubscription);
     }
   }
 
   // get image url
   getImageUrl(photoUrl: string): string {
-    return this.profileService.getFullImageUrl(photoUrl);
+    return this._profileService.getFullImageUrl(photoUrl);
   }
 
   // open modal
@@ -110,7 +113,7 @@ export class ProfileComponent implements OnInit {
 
   // update user details
   saveChanges(updatedData: any) {
-    this.profileService.updateUser(updatedData).subscribe({
+    const updateUserSubscription = this._profileService.updateUser(updatedData).subscribe({
       next: (response: any) => {
         this.loadUserData();
         this.closeModal();
@@ -155,6 +158,7 @@ export class ProfileComponent implements OnInit {
         console.error('Error updating user', error);
       },
     });
+    this._subscription.add(updateUserSubscription);
   }
 
   // change password modal
@@ -169,7 +173,7 @@ export class ProfileComponent implements OnInit {
 
   // save new password
   savePassword(passwordData: any) {
-    this.profileService.changePassword(passwordData).subscribe({
+    const passwordSubscription = this._profileService.changePassword(passwordData).subscribe({
       next: (response: any) => {
         this.closeChangePassword();
         if (response) {
@@ -199,5 +203,6 @@ export class ProfileComponent implements OnInit {
         }
       },
     });
+    this._subscription.add(passwordSubscription);
   }
 }
