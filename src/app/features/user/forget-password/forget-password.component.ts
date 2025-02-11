@@ -7,11 +7,10 @@ import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-forget-password',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './forget-password.component.html',
-  styleUrl: './forget-password.component.css',
+    selector: 'app-forget-password',
+    imports: [FormsModule, ReactiveFormsModule, CommonModule],
+    templateUrl: './forget-password.component.html',
+    styleUrl: './forget-password.component.css'
 })
 export class ForgetPasswordComponent implements OnInit, OnDestroy {
   forgetPasswordForm!: FormGroup;

@@ -3,11 +3,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-change-password-modal',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './change-password-modal.component.html',
-  styleUrl: './change-password-modal.component.css',
+    selector: 'app-change-password-modal',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './change-password-modal.component.html',
+    styleUrl: './change-password-modal.component.css'
 })
 export class ChangePasswordModalComponent implements OnInit {
   constructor(private _fb: FormBuilder) {}

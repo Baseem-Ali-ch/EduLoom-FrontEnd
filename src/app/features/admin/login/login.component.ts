@@ -7,11 +7,10 @@ import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+    selector: 'app-login',
+    imports: [ReactiveFormsModule, CommonModule],
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.css'
 })
 export class AdminLoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;

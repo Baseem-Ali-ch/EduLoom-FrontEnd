@@ -2,11 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-notification-modal',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './notification-modal.component.html',
-  styleUrl: './notification-modal.component.css',
+    selector: 'app-notification-modal',
+    imports: [CommonModule],
+    templateUrl: './notification-modal.component.html',
+    styleUrl: './notification-modal.component.css'
 })
 export class NotificationModalComponent {
   @Input() isOpen = false;

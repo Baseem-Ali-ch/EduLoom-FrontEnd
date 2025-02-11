@@ -13,11 +13,10 @@ import { jwtDecode } from 'jwt-decode';
 import { OnIdentifyEffects } from '@ngrx/effects';
 
 @Component({
-  selector: 'app-notification',
-  standalone: true,
-  imports: [SidebarComponent, CommonModule, NotificationModalComponent],
-  templateUrl: './notification.component.html',
-  styleUrl: './notification.component.css',
+    selector: 'app-notification',
+    imports: [SidebarComponent, CommonModule, NotificationModalComponent],
+    templateUrl: './notification.component.html',
+    styleUrl: './notification.component.css'
 })
 export class NotificationComponent implements OnInit, OnDestroy {
   notifications: any[] = [];

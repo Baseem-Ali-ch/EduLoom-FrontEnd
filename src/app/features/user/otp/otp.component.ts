@@ -9,11 +9,10 @@ import { registerSuccess } from '../../../state/user/user.action';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-otp',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './otp.component.html',
-  styleUrl: './otp.component.css',
+    selector: 'app-otp',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './otp.component.html',
+    styleUrl: './otp.component.css'
 })
 export class OtpComponent implements OnInit, OnDestroy {
   otpForm!: FormGroup;

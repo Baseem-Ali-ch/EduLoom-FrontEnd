@@ -3,11 +3,10 @@ import { InstructorSidebarComponent } from '../../../shared/components/instructo
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-course',
-  standalone: true,
-  imports: [InstructorSidebarComponent, RouterModule],
-  templateUrl: './course.component.html',
-  styleUrl: './course.component.css'
+    selector: 'app-course',
+    imports: [InstructorSidebarComponent, RouterModule],
+    templateUrl: './course.component.html',
+    styleUrl: './course.component.css'
 })
 export class CourseComponent {
 

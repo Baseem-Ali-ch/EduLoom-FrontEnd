@@ -8,11 +8,10 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-admin-sidebar',
-  standalone: true,
-  imports: [RouterModule, CommonModule],
-  templateUrl: './admin-sidebar.component.html',
-  styleUrl: './admin-sidebar.component.css',
+    selector: 'app-admin-sidebar',
+    imports: [RouterModule, CommonModule],
+    templateUrl: './admin-sidebar.component.html',
+    styleUrl: './admin-sidebar.component.css'
 })
 export class AdminSidebarComponent implements OnInit, OnDestroy{
   user: any;

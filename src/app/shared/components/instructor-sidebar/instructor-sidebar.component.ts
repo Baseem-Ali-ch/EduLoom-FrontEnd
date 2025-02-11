@@ -8,11 +8,10 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-instructor-sidebar',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './instructor-sidebar.component.html',
-  styleUrl: './instructor-sidebar.component.css'
+    selector: 'app-instructor-sidebar',
+    imports: [CommonModule, RouterModule],
+    templateUrl: './instructor-sidebar.component.html',
+    styleUrl: './instructor-sidebar.component.css'
 })
 
 export class InstructorSidebarComponent implements OnInit, OnDestroy{

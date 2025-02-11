@@ -9,11 +9,10 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css',
+    selector: 'app-register',
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   registerForm!: FormGroup;

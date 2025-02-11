@@ -14,11 +14,10 @@ import { Subscription } from 'rxjs';
 declare const google: any;
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css',
+    selector: 'app-register',
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   registerForm!: FormGroup;

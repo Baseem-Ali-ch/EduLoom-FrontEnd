@@ -5,11 +5,10 @@ import { CommonModule } from '@angular/common';
 
 
 @Component({
-  selector: 'app-add-course',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InstructorSidebarComponent],
-  templateUrl: './add-course.component.html',
-  styleUrl: './add-course.component.css',
+    selector: 'app-add-course',
+    imports: [ReactiveFormsModule, CommonModule, InstructorSidebarComponent],
+    templateUrl: './add-course.component.html',
+    styleUrl: './add-course.component.css'
 })
 export class AddCourseComponent {
   currentStep: number = 1;

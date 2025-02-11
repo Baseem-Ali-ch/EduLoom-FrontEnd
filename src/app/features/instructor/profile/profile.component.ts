@@ -8,11 +8,10 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [EditModalComponent, CommonModule, InstructorSidebarComponent, ChangePasswordComponent],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
+    selector: 'app-profile',
+    imports: [EditModalComponent, CommonModule, InstructorSidebarComponent, ChangePasswordComponent],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   instructor: any;

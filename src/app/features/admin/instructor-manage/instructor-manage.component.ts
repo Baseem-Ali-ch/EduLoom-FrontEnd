@@ -6,11 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-instructor-manage',
-  standalone: true,
-  imports: [AdminSidebarComponent, CommonModule, FormsModule],
-  templateUrl: './instructor-manage.component.html',
-  styleUrl: './instructor-manage.component.css',
+    selector: 'app-instructor-manage',
+    imports: [AdminSidebarComponent, CommonModule, FormsModule],
+    templateUrl: './instructor-manage.component.html',
+    styleUrl: './instructor-manage.component.css'
 })
 export class InstructorManageComponent implements OnInit, OnDestroy {
   allInstructors: any[] = [];

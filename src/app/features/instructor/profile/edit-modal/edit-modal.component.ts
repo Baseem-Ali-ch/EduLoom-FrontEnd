@@ -3,11 +3,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-modal',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './edit-modal.component.html',
-  styleUrl: './edit-modal.component.css',
+    selector: 'app-edit-modal',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    templateUrl: './edit-modal.component.html',
+    styleUrl: './edit-modal.component.css'
 })
 export class EditModalComponent implements OnInit {
   @Input() isOpen = false;

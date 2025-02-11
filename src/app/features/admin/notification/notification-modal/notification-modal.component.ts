@@ -4,11 +4,10 @@ import { NotificationService } from '../../../../core/services/user/notification
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-notification-modal',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './notification-modal.component.html',
-  styleUrl: './notification-modal.component.css',
+    selector: 'app-notification-modal',
+    imports: [CommonModule],
+    templateUrl: './notification-modal.component.html',
+    styleUrl: './notification-modal.component.css'
 })
 export class NotificationModalComponent implements OnDestroy {
   @Input() isOpen = false;

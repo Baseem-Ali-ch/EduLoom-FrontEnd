@@ -3,11 +3,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-instructor-req',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './instructor-req.component.html',
-  styleUrl: './instructor-req.component.css',
+    selector: 'app-instructor-req',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './instructor-req.component.html',
+    styleUrl: './instructor-req.component.css'
 })
 export class InstructorReqComponent implements OnInit {
   @Input() isInstructorOpen = false;

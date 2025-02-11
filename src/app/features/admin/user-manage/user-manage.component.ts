@@ -6,11 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-user-manage',
-  standalone: true,
-  imports: [AdminSidebarComponent, CommonModule, FormsModule],
-  templateUrl: './user-manage.component.html',
-  styleUrl: './user-manage.component.css',
+    selector: 'app-user-manage',
+    imports: [AdminSidebarComponent, CommonModule, FormsModule],
+    templateUrl: './user-manage.component.html',
+    styleUrl: './user-manage.component.css'
 })
 export class UserManageComponent implements OnInit, OnDestroy {
   allUsers: any[] = [];

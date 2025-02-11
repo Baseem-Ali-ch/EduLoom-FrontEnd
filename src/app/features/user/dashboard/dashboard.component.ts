@@ -8,11 +8,10 @@ import { Observable, Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [SidebarComponent, CommonModule],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+    selector: 'app-dashboard',
+    imports: [SidebarComponent, CommonModule],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent{
  

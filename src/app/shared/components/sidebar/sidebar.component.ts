@@ -8,11 +8,10 @@ import { ProfileService } from '../../../core/services/user/profile.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-sidebar',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css',
+    selector: 'app-sidebar',
+    imports: [CommonModule, RouterModule],
+    templateUrl: './sidebar.component.html',
+    styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   user: any;

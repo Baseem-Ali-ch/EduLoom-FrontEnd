@@ -7,11 +7,10 @@ import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-ins-reset-password',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.css',
+    selector: 'app-ins-reset-password',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './reset-password.component.html',
+    styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponentIns implements OnInit, OnDestroy {
   passwordForm!: FormGroup;

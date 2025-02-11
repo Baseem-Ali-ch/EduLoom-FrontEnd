@@ -6,11 +6,10 @@ import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-notification',
-  standalone: true,
-  imports: [NotificationModalComponent, CommonModule, AdminSidebarComponent],
-  templateUrl: './notification.component.html',
-  styleUrl: './notification.component.css',
+    selector: 'app-notification',
+    imports: [NotificationModalComponent, CommonModule, AdminSidebarComponent],
+    templateUrl: './notification.component.html',
+    styleUrl: './notification.component.css'
 })
 export class NotificationComponent implements OnInit, OnDestroy {
   notifications: any[] = [];

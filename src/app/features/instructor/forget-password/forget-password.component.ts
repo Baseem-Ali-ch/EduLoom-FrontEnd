@@ -7,11 +7,10 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-ins-forget-password',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './forget-password.component.html',
-  styleUrl: './forget-password.component.css',
+    selector: 'app-ins-forget-password',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './forget-password.component.html',
+    styleUrl: './forget-password.component.css'
 })
 export class ForgetPasswordComponentIns implements OnInit, OnDestroy {
   forgetPasswordForm!: FormGroup;
