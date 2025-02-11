@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   showPassword: boolean = false;
   private _subscription: Subscription = new Subscription();
 
-  constructor(private _fb: FormBuilder, private _store: Store<AppState>, private _authService: AuthService, private _router: Router) {}
+  constructor(private _fb: FormBuilder, private _authService: AuthService, private _router: Router) {}
 
   ngOnInit(): void {
     this.form();
