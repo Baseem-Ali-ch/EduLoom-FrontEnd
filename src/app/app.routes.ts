@@ -58,8 +58,8 @@ export const routes: Routes = [
       { path: 'login', loadComponent: () => import('./features/instructor/login/login.component').then((c) => c.LoginComponent) },
       { path: 'dashboard', loadComponent: () => import('./features/instructor/dashboard/dashboard.component').then((c) => c.DashboardComponent), canActivate: [insAuthGuard] },
       { path: 'profile', loadComponent: () => import('./features/instructor/profile/profile.component').then((c) => c.ProfileComponent), canActivate: [insAuthGuard] },
-      { path: 'courses', loadComponent: () => import('./features/instructor/course/course.component').then((c) => c.CourseComponent) },
-      { path: 'add-course', loadComponent: () => import('./features/instructor/add-course/add-course.component').then((c) => c.AddCourseComponent) },
+      { path: 'courses', loadComponent: () => import('./features/instructor/course/course.component').then((c) => c.CourseComponent), canActivate: [insAuthGuard] },
+      { path: 'add-course', loadComponent: () => import('./features/instructor/add-course/add-course.component').then((c) => c.AddCourseComponent), canActivate: [insAuthGuard] },
     ],
   },
 

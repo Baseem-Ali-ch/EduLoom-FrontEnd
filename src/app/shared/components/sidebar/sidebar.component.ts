@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-sidebar',
+    standalone: true,
     imports: [CommonModule, RouterModule],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.css'
@@ -16,6 +17,7 @@ import { Subscription } from 'rxjs';
 export class SidebarComponent implements OnInit, OnDestroy {
   user: any;
   private _subscription: Subscription = new Subscription()
+  isSidebarOpen: boolean = false;
 
   constructor(
     private _router: Router,
@@ -81,4 +83,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
   }
+
+  
 }

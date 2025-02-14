@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-otp',
+    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './otp.component.html',
     styleUrl: './otp.component.css'

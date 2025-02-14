@@ -7,10 +7,11 @@ import Swal from 'sweetalert2';
 import { Subscription, throwIfEmpty } from 'rxjs';
 
 @Component({
-    selector: 'app-reset-password',
-    imports: [ReactiveFormsModule, CommonModule],
-    templateUrl: './reset-password.component.html',
-    styleUrl: './reset-password.component.css'
+  selector: 'app-reset-password',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './reset-password.component.html',
+  styleUrl: './reset-password.component.css',
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
   passwordForm!: FormGroup;
@@ -23,6 +24,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.form();
     this.token = this._route.snapshot.paramMap.get('token');
+    // prevent navigate register page after loggined
+    if (this._authService.isLoggedIn()) {
+      this._router.navigate(['/student/dashboard']);
+    }
   }
 
   ngOnDestroy(): void {

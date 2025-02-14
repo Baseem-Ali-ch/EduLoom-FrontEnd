@@ -1,4 +1,8 @@
-<aside
+<button class="md:hidden absolute top-4 left-4 bg-gray-800 text-white p-2 rounded-md z-50"
+    (click)="isSidebarOpen = !isSidebarOpen">
+    ☰
+</button>
+<aside [ngClass]="{'hidden': !isSidebarOpen, 'block': isSidebarOpen, 'md:flex': true, 'md:relative': true}"
     class="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto border-r rtl:border-r-0 rtl:border-l bg-gray-900 border-gray-700">
     <a routerLink="/student/dashboard" class="mx-auto">
         <img class="w-auto h-6 sm:h-7" src="https://merakiui.com/images/full-logo.svg" alt="logo">

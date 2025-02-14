@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-profile',
+    standalone: true,
     imports: [AdminSidebarComponent, EditModalComponent, ChangePasswordModalComponent, CommonModule],
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.css'
@@ -114,7 +115,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   saveChanges(updatedData: any) {
     const updateUserSubscription = this._profileService.updateUser(updatedData).subscribe({
       next: (response: any) => {
-        this.loadUserData();
+        this.user = { ...this.user, ...updatedData };
+        // this.loadUserData();
         this.closeModal();
         if (response) {
           Swal.fire({

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 
 @Component({
     selector: 'app-edit-modal',
+    standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule],
     templateUrl: './edit-modal.component.html',
     styleUrl: './edit-modal.component.css'

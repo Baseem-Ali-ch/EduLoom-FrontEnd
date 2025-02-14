@@ -14,6 +14,7 @@ import { OnIdentifyEffects } from '@ngrx/effects';
 
 @Component({
     selector: 'app-notification',
+    standalone: true,
     imports: [SidebarComponent, CommonModule, NotificationModalComponent],
     templateUrl: './notification.component.html',
     styleUrl: './notification.component.css'

@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-instructor-sidebar',
+    standalone: true,
     imports: [CommonModule, RouterModule],
     templateUrl: './instructor-sidebar.component.html',
     styleUrl: './instructor-sidebar.component.css'
@@ -17,6 +18,7 @@ import { Subscription } from 'rxjs';
 export class InstructorSidebarComponent implements OnInit, OnDestroy{
   instructor: any;
   private _subscription: Subscription = new Subscription()
+  isSidebarOpen: boolean = false
 
   constructor(
     private _router: Router,

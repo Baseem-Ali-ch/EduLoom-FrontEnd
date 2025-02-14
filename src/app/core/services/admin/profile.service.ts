@@ -18,33 +18,18 @@ export class ProfileService {
 
   // get user details from db
   getUser(): Observable<any> {
-    const token = this.getToken();
-    return this._http.get(`${this._apiUrl}/admin/getUser`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return this._http.get(`${this._apiUrl}/admin/getUser`);
   }
 
   // update user details
   updateUser(userData: User): Observable<any> {
-    const token = this.getToken();
-    return this._http.put(`${this._apiUrl}/admin/profileUpdate`, userData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return this._http.put(`${this._apiUrl}/admin/profileUpdate`, userData);
   }
 
   // upload profile photo
   uploadProfilePhoto(formData: FormData): Observable<any> {
     console.log('form data', formData);
-    const token = this.getToken();
-    return this._http.post(`${this._apiUrl}/admin/profile-photo`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return this._http.post(`${this._apiUrl}/admin/profile-photo`, formData);
   }
 
   // get full image URL
@@ -57,15 +42,6 @@ export class ProfileService {
 
   // change password
   changePassword(passwordData: any): Observable<any> {
-    const token = this.getToken();
-    return this._http.post(
-      `${this._apiUrl}/admin/change-password`,
-      passwordData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    return this._http.post(`${this._apiUrl}/admin/change-password`, passwordData);
   }
 }

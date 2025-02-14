@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-forget-password',
+    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, CommonModule],
     templateUrl: './forget-password.component.html',
     styleUrl: './forget-password.component.css'

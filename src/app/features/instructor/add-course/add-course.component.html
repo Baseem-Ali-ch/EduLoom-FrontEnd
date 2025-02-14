@@ -149,11 +149,12 @@
                         <h2 class="text-2xl font-semibold mb-6 text-white">Module Creation</h2>
 
                         <!-- Module Title & Add Module Button -->
-                        <div class="mb-6 flex items-center space-x-4">
-                            <input type="text" formControlName="moduleTitle"
+                        <div class="flex items-center space-x-4">
+                            <input type="text" formControlName="moduleTitle" required
                                 class="w-[43rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
                                 placeholder="Enter Module Title">
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2"
+                                (click)="addModule($event)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-plus" viewBox="0 0 16 16">
                                     <path
@@ -162,22 +163,24 @@
                                 Module
                             </button>
                         </div>
-
+                        <div *ngIf="courseForm.get('moduleTitle')?.touched && courseForm.get('moduleTitle')?.invalid"
+                            class="text-red-500 text-sm mt-1">
+                            This field is required
+                        </div>
 
                         <!-- Lesson Title, Select Module & Add Lesson Button -->
-                        <div class="mb-6 flex items-center space-x-4">
-                            <input type="text" formControlName="lessonTitle"
+                        <div class="mt-6 flex items-center space-x-4">
+                            <input type="text" formControlName="lessonTitle" required
                                 class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
                                 placeholder="Enter Lesson Title">
-                            <select formControlName="moduleSelection"
+                            <select formControlName="moduleSelection" required
                                 class="w-[20.1rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
                                 <option value="">Select Module</option>
-                                <option value="programming">Programming</option>
-                                <option value="design">Design</option>
-                                <option value="business">Business</option>
-                                <option value="marketing">Marketing</option>
+                                <option *ngFor="let module of modules" [value]="module">{{module}}</option>
                             </select>
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2"
+                                (click)="addLesson($event)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-plus" viewBox="0 0 16 16">
                                     <path
@@ -186,20 +189,21 @@
                                 Lesson
                             </button>
                         </div>
-
+                        <div *ngIf="courseForm.get('lessonTitle')?.touched && courseForm.get('lessonTitle')?.invalid"
+                            class="text-red-500 text-sm mt-1">
+                            This field is required
+                        </div>
                         <!-- Upload Content, Select Lesson & Add Content Button -->
-                        <div class="mb-6 flex items-center space-x-4">
-                            <input type="file" formControlName="uploadContent"
+                        <div class="mt-6 flex items-center space-x-4">
+                            <input type="file" formControlName="uploadContent" required
                                 class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                            <select formControlName="lessonSelection"
+                            <select formControlName="lessonSelection" required
                                 class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
                                 <option value="">Select Lesson</option>
-                                <option value="programming">Programming</option>
-                                <option value="design">Design</option>
-                                <option value="business">Business</option>
-                                <option value="marketing">Marketing</option>
+                                <option *ngFor="let lesson of lessons" [ngValue]="lesson">{{lesson.title}}</option>
                             </select>
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
+                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2"
+                                (click)="addContent()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-plus" viewBox="0 0 16 16">
                                     <path
@@ -208,15 +212,21 @@
                                 Content
                             </button>
                         </div>
+                        <div *ngIf="courseForm.get('uploadContent')?.touched && courseForm.get('uploadContent')?.invalid"
+                            class="text-red-500 text-sm mt-1">
+                            This field is required
+                        </div>
 
                         <!-- Display Added Content -->
                         <div class="mt-6">
                             <h3 class="text-xl font-semibold text-white mb-4">Added Content</h3>
-                            <!-- <ul class="text-gray-300">
-                                <li *ngFor="let content of addedContents" class="mb-2 border p-2 rounded-md bg-gray-800">
-                                    {{ content }}
+                            <ul class="text-gray-300">
+                                <li *ngFor="let content of contents" class="mb-2 border p-2 rounded-md bg-gray-800">
+                                    Module  : {{ content.module }} <br>
+                                    Lesson  : {{ content.lesson }} <br>
+                                    content : {{ content.cont }}
                                 </li>
-                            </ul> -->
+                            </ul>
                         </div>
                     </div>
 
@@ -226,7 +236,7 @@
 
                         <!-- Module Title & Add Module Button -->
                         <div class="mb-6 flex items-center space-x-4">
-                            <select formControlName="moduleSelection"
+                            <select
                                 class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
                                 <option value="">Select Assignments</option>
                                 <option value="programming">Programming</option>
@@ -244,10 +254,9 @@
                             </button>
                         </div>
 
-
                         <!-- Lesson Title, Select Module & Add Lesson Button -->
                         <div class="mb-6 flex items-center space-x-4">
-                            <select formControlName="moduleSelection"
+                            <select
                                 class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
                                 <option value="">Select Quizzes</option>
                                 <option value="programming">Programming</option>
@@ -290,15 +299,19 @@
                     <div *ngIf="currentStep === 4">
                         <h2 class="text-2xl font-semibold mb-6 text-white">Pricing</h2>
 
-                        <div class="mb-6 flex items-center space-x-4">
-                            <input type="text" formControlName="moduleTitle"
+                        <div class=" flex items-center space-x-4">
+                            <input type="text" formControlName="price"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
-                                placeholder="Enter Module Title">
+                                placeholder="Enter Price">
+                        </div>
+                        <div *ngIf="courseForm.get('price')?.touched && courseForm.get('price')?.invalid"
+                            class="text-red-500 text-sm mt-1">
+                            This field is required
                         </div>
 
                         <!-- Lesson Title, Select Module & Add Lesson Button -->
-                        <div class="mb-6 flex items-center space-x-4">
-                            <select formControlName="moduleSelection"
+                        <div class="mt-6 flex items-center space-x-4">
+                            <select
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
                                 <option value="">Select Offer</option>
                                 <option value="programming">Programming</option>
@@ -309,7 +322,7 @@
                         </div>
 
                         <!-- Upload Content, Select Lesson & Add Content Button -->
-                        <div class="mb-6 flex items-center space-x-4">
+                        <div class="mt-6 flex items-center space-x-4">
                             <select formControlName="lessonSelection"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
                                 <option value="">Select Coupon</option>
@@ -324,13 +337,21 @@
 
                     <!-- Navigation Buttons -->
                     <div class="flex justify-between mt-8">
-                        <button *ngIf="currentStep > 1" (click)="previousStep()" type="button"
+                        <button disabled *ngIf="currentStep === 1" (click)="previousStep()" type="button"
                             class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                            Previous
+                        </button>
+                        <button *ngIf="currentStep > 1" (click)="previousStep()" type="button"
+                            class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
                             Previous
                         </button>
                         <button *ngIf="currentStep < totalSteps" (click)="nextStep()" type="button"
                             class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             Next
+                        </button>
+                        <button *ngIf="currentStep === totalSteps" (click)="onSubmit()" type="button"
+                            class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            Submit
                         </button>
                     </div>
                 </form>

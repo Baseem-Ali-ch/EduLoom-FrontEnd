@@ -10,12 +10,14 @@ import { selectIsLoading } from '../../../state/user/user.selector';
 import { AppState } from '../../../state/user/user.state';
 import { User } from '../../../core/models/IUser';
 import { Subscription } from 'rxjs';
+import { PasswordValidatorDirective } from '../../../core/directives/password-validator.directive';
 
 declare const google: any;
 
 @Component({
     selector: 'app-register',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, RouterModule, PasswordValidatorDirective],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })

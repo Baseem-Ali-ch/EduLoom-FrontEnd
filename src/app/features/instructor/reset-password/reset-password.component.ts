@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-ins-reset-password',
+    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './reset-password.component.html',
     styleUrl: './reset-password.component.css'
@@ -18,7 +19,7 @@ export class ResetPasswordComponentIns implements OnInit, OnDestroy {
   showPassword: boolean = false;
   private _subscription: Subscription = new Subscription();
 
-  constructor(private _router: Router, private _authService: AuthService, private _fb: FormBuilder, private _route: ActivatedRoute) {}
+  constructor( private _authService: AuthService, private _fb: FormBuilder, private _route: ActivatedRoute) {}
 
   ngOnInit() {
     this.form();

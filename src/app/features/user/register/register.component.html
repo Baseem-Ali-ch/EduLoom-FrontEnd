@@ -69,9 +69,12 @@
                     </svg>
                 </span>
 
+                <!-- <input [type]="showPassword ? 'text' : 'password'"
+                    class="block w-full px-10 py-3 border rounded-lg bg-gray-900 text-gray-300 border-gray-600 focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                    placeholder="Password" formControlName="password"> -->
                 <input [type]="showPassword ? 'text' : 'password'"
                     class="block w-full px-10 py-3 border rounded-lg bg-gray-900 text-gray-300 border-gray-600 focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                    placeholder="Password" formControlName="password">
+                    placeholder="Password" formControlName="password" appPasswordValidator>
 
                 <button type="button" (click)="togglePassword()" class="absolute right-3">
                     <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -95,12 +98,22 @@
                     </svg>
                 </button>
             </div>
-            <p *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched"
+            <!-- <p *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched"
                 class="text-red-500 text-sm">Password is required.</p>
             <p *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched"
                 class="text-red-500 text-sm">Password must be at least 6 characters long.</p>
             <p *ngIf="registerForm.get('password')?.hasError('pattern') && registerForm.get('password')?.touched"
-                class="text-red-500 text-sm">Password should contain capital letter, number, special character.</p>
+                class="text-red-500 text-sm">Password should contain capital letter, number, special character.</p> -->
+            <p *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched"
+                class="text-red-500 text-sm">Password is required.</p>
+            <p *ngIf="registerForm.get('password')?.hasError('minLength') && registerForm.get('password')?.touched"
+                class="text-red-500 text-sm">Password must be at least 6 characters long.</p>
+            <p *ngIf="registerForm.get('password')?.hasError('uppercase') && registerForm.get('password')?.touched"
+                class="text-red-500 text-sm">Password must contain at least one uppercase letter.</p>
+            <p *ngIf="registerForm.get('password')?.hasError('number') && registerForm.get('password')?.touched"
+                class="text-red-500 text-sm">Password must contain at least one number.</p>
+            <p *ngIf="registerForm.get('password')?.hasError('specialChar') && registerForm.get('password')?.touched"
+                class="text-red-500 text-sm">Password must contain at least one special character.</p>
 
             <div class="relative flex items-center mt-4">
                 <span class="absolute left-3">

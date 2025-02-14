@@ -1,22 +1,15 @@
-import {
-  ApplicationConfig,
-  importProvidersFrom,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { authReducer } from './state/user/user.reducer';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AppState } from './state/user/user.state';
-import {
-  GoogleLoginProvider,
-  SocialAuthServiceConfig,
-  SocialLoginModule,
-} from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
 import { ReactiveFormsModule } from '@angular/forms';
+import { studentAuthInterceptor } from './core/interceptors/user/auth.interceptor.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,13 +25,12 @@ export const appConfig: ApplicationConfig = {
         providers: [
           {
             id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(
-              '608019199691-eelbp162ca7ckpck9ukqthqi9jp993k1.apps.googleusercontent.com', { oneTapEnabled: false }
-            ),
+            provider: new GoogleLoginProvider('608019199691-eelbp162ca7ckpck9ukqthqi9jp993k1.apps.googleusercontent.com', { oneTapEnabled: false }),
           },
         ],
       } as SocialAuthServiceConfig,
     },
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    provideHttpClient(withInterceptors([studentAuthInterceptor])),
   ],
 };

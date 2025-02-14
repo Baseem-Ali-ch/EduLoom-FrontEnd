@@ -1,4 +1,4 @@
-import { createFeatureSelector, createSelector, select } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AuthState } from '../../core/models/IUser';
 import { AppState } from './user.state';
 

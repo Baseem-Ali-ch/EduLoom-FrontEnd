@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-user-manage',
+    standalone: true,
     imports: [AdminSidebarComponent, CommonModule, FormsModule],
     templateUrl: './user-manage.component.html',
     styleUrl: './user-manage.component.css'

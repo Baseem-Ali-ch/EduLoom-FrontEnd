@@ -10,10 +10,11 @@ import { ChangePasswordModalComponent } from './change-password-modal/change-pas
 import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-profile',
-    imports: [SidebarComponent, CommonModule, EditModalComponent, InstructorReqComponent, ChangePasswordModalComponent],
-    templateUrl: './profile.component.html',
-    styleUrl: './profile.component.css'
+  selector: 'app-profile',
+  standalone: true,
+  imports: [SidebarComponent, CommonModule, EditModalComponent, InstructorReqComponent, ChangePasswordModalComponent],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   user: any;
@@ -22,11 +23,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isInstructorModalOpen: boolean = false;
   isChangePasswordModalOpen: boolean = false;
   private _subscription: Subscription = new Subscription();
+  imageError = false;
 
   constructor(private _profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.loadUserData();
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 
   // display the user details
@@ -83,9 +89,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  // get image url
-  getImageUrl(photoUrl: string): string {
+  getImageUrl(photoUrl: string | undefined): string {
     return this._profileService.getFullImageUrl(photoUrl);
+  }
+
+  handleImageError() {
+    this.imageError = true;
+    return 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg';
   }
 
   // open modal
@@ -157,7 +167,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   saveChanges(updatedData: any) {
     const saveChangesSubscription = this._profileService.updateUser(updatedData).subscribe({
       next: (response: any) => {
-        this.loadUserData();
+        this.user = { ...this.user, ...updatedData };
+        // this.loadUserData();
         this.closeModal();
         if (response) {
           Swal.fire({
@@ -251,7 +262,5 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
     this._subscription.add(sendInstructorDetailsSubscription);
   }
-  ngOnDestroy(): void {
-    this._subscription.unsubscribe();
-  }
+  
 }

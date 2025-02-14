@@ -18,33 +18,17 @@ export class ProfileService {
 
   // get user details from db
   getInstructor(): Observable<any> {
-    const token = this.getToken();
-    return this._http.get(`${this._apiUrl}/instructor/getInstructor`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return this._http.get(`${this._apiUrl}/instructor/getInstructor`, {});
   }
 
   // update user details
   updateUser(userData: User): Observable<any> {
-    const token = this.getToken();
-    return this._http.put(`${this._apiUrl}/instructor/profileUpdate`, userData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return this._http.put(`${this._apiUrl}/instructor/profileUpdate`, userData, {});
   }
 
   // upload profile photo
   uploadProfilePhoto(formData: FormData): Observable<any> {
-    console.log('form data', formData);
-    const token = this.getToken();
-    return this._http.post(`${this._apiUrl}/instructor/profile-photo`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return this._http.post(`${this._apiUrl}/instructor/profile-photo`, formData, {});
   }
 
   // get full image URL
@@ -57,15 +41,6 @@ export class ProfileService {
 
   // change password
   changePassword(passwordData: any): Observable<any> {
-    const token = this.getToken();
-    return this._http.post(
-      `${this._apiUrl}/instructor/change-password`,
-      passwordData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    return this._http.post(`${this._apiUrl}/instructor/change-password`, passwordData, {});
   }
 }

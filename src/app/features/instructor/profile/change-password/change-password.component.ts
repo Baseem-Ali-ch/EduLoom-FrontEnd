@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 @Component({
     selector: 'app-change-password',
+    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './change-password.component.html',
     styleUrl: './change-password.component.css'

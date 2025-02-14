@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 @Component({
     selector: 'app-edit-modal',
+    standalone: true,
     imports: [ReactiveFormsModule, CommonModule],
     templateUrl: './edit-modal.component.html',
     styleUrl: './edit-modal.component.css'

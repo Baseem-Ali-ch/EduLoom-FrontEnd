@@ -10,14 +10,16 @@ import { AppState } from '../../../state/user/user.state';
 import { login } from '../../../state/user/user.action';
 import { SocialLoginModule, SocialAuthService, GoogleLoginProvider } from '@abacritt/angularx-social-login';
 import { Subscription } from 'rxjs';
+import { PasswordValidatorDirective } from '../../../core/directives/password-validator.directive';
 
 declare const google: any;
 
 @Component({
-    selector: 'app-login',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css'
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
@@ -149,7 +151,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this._router.navigate(['/student/dashboard']);
         Swal.fire({
           icon: 'success',
-          title: 'Google Login Successful!',
+          title: 'Login Successful!',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,

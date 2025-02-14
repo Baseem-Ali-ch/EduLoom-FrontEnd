@@ -19,12 +19,7 @@ export class UsersService {
 
   // get user details from db
   getUser(page: number, limit: number): Observable<any> {
-    const token = this.getToken();    
-    return this._http.get<any>(`${this._apiUrl}/admin/getAllUser?page=${page}&limit=${limit}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return this._http.get<any>(`${this._apiUrl}/admin/getAllUser?page=${page}&limit=${limit}`);
   }
 
   // update status

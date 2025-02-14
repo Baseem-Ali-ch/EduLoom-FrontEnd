@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-notification',
+    standalone: true,
     imports: [NotificationModalComponent, CommonModule, AdminSidebarComponent],
     templateUrl: './notification.component.html',
     styleUrl: './notification.component.css'

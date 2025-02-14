@@ -7,10 +7,12 @@ import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { PasswordValidatorDirective } from '../../../core/directives/password-validator.directive';
 
 @Component({
     selector: 'app-register',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, RouterModule, PasswordValidatorDirective],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
@@ -32,7 +34,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     
     // prevent navigate register page after loggined
     if (this._authService.isLoggedIn()) {
-      this._router.navigate(['/user/dashboard']);
+      this._router.navigate(['/instructor/dashboard']);
     }
   }
 

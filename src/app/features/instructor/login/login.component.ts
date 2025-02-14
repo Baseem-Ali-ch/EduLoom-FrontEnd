@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-login',
+    standalone: true,
     imports: [CommonModule, ReactiveFormsModule, RouterModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css'

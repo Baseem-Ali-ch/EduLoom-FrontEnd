@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-admin-sidebar',
+    standalone: true,
     imports: [RouterModule, CommonModule],
     templateUrl: './admin-sidebar.component.html',
     styleUrl: './admin-sidebar.component.css'

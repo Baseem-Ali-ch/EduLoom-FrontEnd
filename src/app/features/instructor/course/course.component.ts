@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-course',
+    standalone: true,
     imports: [InstructorSidebarComponent, RouterModule],
     templateUrl: './course.component.html',
     styleUrl: './course.component.css'

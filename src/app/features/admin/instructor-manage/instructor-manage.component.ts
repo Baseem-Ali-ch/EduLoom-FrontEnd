@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-instructor-manage',
+    standalone: true,
     imports: [AdminSidebarComponent, CommonModule, FormsModule],
     templateUrl: './instructor-manage.component.html',
     styleUrl: './instructor-manage.component.css'
