@@ -104,12 +104,12 @@
                                         <td class="px-4 py-4 text-md whitespace-nowrap">
                                             <div class="flex items-center gap-x-6">
                                                 <button *ngIf="user.isActive; else inactiveTemplate"
-                                                    (click)="updateStatus(user._id, false)"
+                                                    (click)="updateStatus(user._id!, false)"
                                                     class="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600">
                                                     Suspend
                                                 </button>
                                                 <ng-template #inactiveTemplate>
-                                                    <button (click)="updateStatus(user._id, true)"
+                                                    <button (click)="updateStatus(user._id!, true)"
                                                         class="px-2 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600">
                                                         Activate
                                                     </button>

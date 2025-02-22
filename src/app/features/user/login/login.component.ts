@@ -66,6 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (res) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('token', res.token);
+            localStorage.setItem('refresh-token', res.refreshToken);
             this._router.navigate(['/student/dashboard']);
             Swal.fire({
               icon: 'success',
@@ -78,7 +79,8 @@ export class LoginComponent implements OnInit, OnDestroy {
               background: 'rgb(8, 10, 24)',
               color: 'white',
             });
-          } else {
+          } 
+          else {
             Swal.fire({
               icon: 'error',
               title: 'Login failed',

@@ -6,21 +6,24 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { CommonModule } from '@angular/common';
 import { ChangePasswordModalComponent } from './change-password-modal/change-password-modal.component';
 import { Subscription } from 'rxjs';
+import { IUser } from '../../../core/models/IUser';
+import { IInstructor } from '../../../core/models/Instructor';
 
 @Component({
-    selector: 'app-profile',
-    standalone: true,
-    imports: [AdminSidebarComponent, EditModalComponent, ChangePasswordModalComponent, CommonModule],
-    templateUrl: './profile.component.html',
-    styleUrl: './profile.component.css'
+  selector: 'app-profile',
+  standalone: true,
+  imports: [AdminSidebarComponent, EditModalComponent, ChangePasswordModalComponent, CommonModule],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  user: any;
-  instructor: any;
+  user!: IUser;
+  instructor!: IInstructor;
   isModalOpen: boolean = false;
   isInstructorModalOpen: boolean = false;
   isChangePasswordModalOpen: boolean = false;
   private _subscription: Subscription = new Subscription();
+  profilePhoto: string = '';
 
   constructor(private _profileService: ProfileService) {}
 
@@ -37,12 +40,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const loadUserSubscription = this._profileService.getUser().subscribe({
       next: (response: any) => {
         this.user = response.user;
+        this.getImage();
       },
       error: (error) => {
-        console.error('Error loading user data:', error);
+        // console.error('Error loading user data:', error);
       },
     });
     this._subscription.add(loadUserSubscription);
+  }
+
+  getImage() {
+    const getImageSubscription = this._profileService.getImage().subscribe({
+      next: (response: any) => {
+        this.profilePhoto = response.signedUrl;
+        console.log('this.', this.profilePhoto);
+      },
+      error: (error) => {
+        console.error('Error loading user image:', error);
+      },
+    });
+    this._subscription.add(getImageSubscription);
   }
 
   // image file select
@@ -54,7 +71,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
       const fileSubscription = this._profileService.uploadProfilePhoto(formData).subscribe({
         next: (response) => {
-          this.user.profilePhoto = response.photoUrl;
+          this.profilePhoto = response.photoUrl;
           Swal.fire({
             icon: 'success',
             title: response.message,

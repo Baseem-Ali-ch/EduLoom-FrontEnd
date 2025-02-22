@@ -6,20 +6,22 @@ import Swal from 'sweetalert2';
 import { InstructorSidebarComponent } from '../../../shared/components/instructor-sidebar/instructor-sidebar.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { Subscription } from 'rxjs';
+import { IInstructor } from '../../../core/models/Instructor';
 
 @Component({
-    selector: 'app-profile',
-    standalone: true,
-    imports: [EditModalComponent, CommonModule, InstructorSidebarComponent, ChangePasswordComponent],
-    templateUrl: './profile.component.html',
-    styleUrl: './profile.component.css'
+  selector: 'app-profile',
+  standalone: true,
+  imports: [EditModalComponent, CommonModule, InstructorSidebarComponent, ChangePasswordComponent],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  instructor: any;
+  instructor!: IInstructor;
   isModalOpen: boolean = false;
   isInstructorModalOpen: boolean = false;
   isChangePasswordModalOpen: boolean = false;
   private _subscription: Subscription = new Subscription();
+  profilePhoto: string = '';
 
   constructor(private _profileService: ProfileService) {}
 
@@ -36,12 +38,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const loadInstructorDataSubscription = this._profileService.getInstructor().subscribe({
       next: (response: any) => {
         this.instructor = response.instructor;
+        this.getImage();
       },
       error: (error) => {
-        console.error('Error loading user data:', error);
+        // console.error('Error loading user data:', error);
       },
     });
     this._subscription.add(loadInstructorDataSubscription);
+  }
+
+  getImage() {
+    const getImageSubscription = this._profileService.getImage().subscribe({
+      next: (response: any) => {
+        this.profilePhoto = response.signedUrl;
+      },
+      error: (error) => {
+        console.error('Error loading user image:', error);
+      },
+    });
+    this._subscription.add(getImageSubscription);
   }
 
   // image file select

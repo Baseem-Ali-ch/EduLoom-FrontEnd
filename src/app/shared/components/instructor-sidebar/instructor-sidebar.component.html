@@ -10,7 +10,7 @@
 
     <div *ngIf="instructor" class="flex flex-col items-center mt-6 -mx-2">
         <img class="object-cover w-24 h-24 mx-2 rounded-full"
-            [src]="getImageUrl(instructor.profilePhoto) || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1738060979~exp=1738064579~hmac=dcfa5142a7195b0afef76e8e5eb79a93d6e2a525a32232427e57b69530685dbe&w=740'"
+            [src]="getImageUrl(profilePhoto) || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1738060979~exp=1738064579~hmac=dcfa5142a7195b0afef76e8e5eb79a93d6e2a525a32232427e57b69530685dbe&w=740'"
             alt="avatar">
         <h4 class="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200">{{ instructor?.userName || 'Guest' }}</h4>
         <p class="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400">{{ instructor?.email || 'No email

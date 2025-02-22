@@ -2,9 +2,7 @@
     <!-- Sidebar -->
     <app-instructor-sidebar></app-instructor-sidebar>
 
-    <!-- Home Content -->
     <section class="flex-1 h-screen overflow-y-auto bg-slate-900 p-6">
-        <!-- Banner -->
         <div class="container mx-auto">
             <h1 class="flex items-center space-x-4 text-2xl font-semibold capitalize lg:text-3xl text-white">
                 <!-- Icon -->
@@ -42,7 +40,7 @@
                                 class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold">
                                 2
                             </div>
-                            <span class="text-sm mt-2">Module Info</span>
+                            <span class="text-sm mt-2">Content Info</span>
                         </div>
 
                         <!-- Connector -->
@@ -54,7 +52,7 @@
                                 class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold">
                                 3
                             </div>
-                            <span class="text-sm mt-2">Content Info</span>
+                            <span class="text-sm mt-2">Assesment</span>
                         </div>
 
                         <!-- Connector -->
@@ -74,6 +72,7 @@
 
                 <!-- Form Content -->
                 <form [formGroup]="courseForm" class=" shadow-md p-6 ">
+
                     <!-- Step 1 Content -->
                     <div *ngIf="currentStep === 1">
                         <h2 class="text-2xl font-semibold mb-6 text-white">Course Basic Information</h2>
@@ -148,85 +147,80 @@
                     <div *ngIf="currentStep === 2">
                         <h2 class="text-2xl font-semibold mb-6 text-white">Module Creation</h2>
 
-                        <!-- Module Title & Add Module Button -->
-                        <div class="flex items-center space-x-4">
-                            <input type="text" formControlName="moduleTitle" required
-                                class="w-[43rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
-                                placeholder="Enter Module Title">
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2"
-                                (click)="addModule($event)">
+                        <div class="w-full max-w-4xl mx-auto p-4 " formArrayName="modules">
+                            <div *ngFor="let moduleGroup of modulesArray.controls; let moduleIndex = index"
+                                [formGroupName]="moduleIndex" class="mb-6">
+                                <div class="bg-gray-900 rounded-lg p-6 border border-gray-300">
+                                    <!-- Module Header -->
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-white text-xl font-semibold">Module {{moduleIndex + 1}}</h3>
+                                        <button type="button" (click)="deleteModule(moduleIndex)"
+                                            class="text-gray-400 hover:text-red-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                                <path
+                                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <!-- Module Title -->
+                                    <input type="text" formControlName="title"
+                                        class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                        placeholder="Module Title">
+
+                                    <!-- Lessons Section -->
+                                    <div class="space-y-4" formArrayName="lessons">
+                                        <div *ngFor="let lessonGroup of getLessonsArray(moduleIndex).controls; let lessonIndex = index"
+                                            [formGroupName]="lessonIndex" class="bg-gray-800 p-4 rounded-lg">
+
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h4 class="text-white">Lesson {{lessonIndex + 1}}</h4>
+                                                <button type="button" (click)="deleteLesson(moduleIndex, lessonIndex)"
+                                                    class="text-gray-400 hover:text-red-500">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                                        <path
+                                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                            <input type="text" formControlName="title"
+                                                class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                                placeholder="Lesson Title">
+
+                                            <textarea formControlName="content"
+                                                class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 min-h-[100px]"
+                                                placeholder="Lesson Content"></textarea>
+                                        </div>
+
+                                        <button type="button" (click)="addLesson(moduleIndex)"
+                                            class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                            </svg>
+                                            Add Lesson
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" (click)="addModule()"
+                                class="flex items-center gap-2 px-4 py-2 bg-gray-800 text-gray-300 rounded-md hover:bg-gray-700 mt-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-plus" viewBox="0 0 16 16">
                                     <path
                                         d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                                 </svg>
-                                Module
+                                Add Module
                             </button>
-                        </div>
-                        <div *ngIf="courseForm.get('moduleTitle')?.touched && courseForm.get('moduleTitle')?.invalid"
-                            class="text-red-500 text-sm mt-1">
-                            This field is required
-                        </div>
-
-                        <!-- Lesson Title, Select Module & Add Lesson Button -->
-                        <div class="mt-6 flex items-center space-x-4">
-                            <input type="text" formControlName="lessonTitle" required
-                                class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
-                                placeholder="Enter Lesson Title">
-                            <select formControlName="moduleSelection" required
-                                class="w-[20.1rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                                <option value="">Select Module</option>
-                                <option *ngFor="let module of modules" [value]="module">{{module}}</option>
-                            </select>
-
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2"
-                                (click)="addLesson($event)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                </svg>
-                                Lesson
-                            </button>
-                        </div>
-                        <div *ngIf="courseForm.get('lessonTitle')?.touched && courseForm.get('lessonTitle')?.invalid"
-                            class="text-red-500 text-sm mt-1">
-                            This field is required
-                        </div>
-                        <!-- Upload Content, Select Lesson & Add Content Button -->
-                        <div class="mt-6 flex items-center space-x-4">
-                            <input type="file" formControlName="uploadContent" required
-                                class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                            <select formControlName="lessonSelection" required
-                                class="w-[20.5rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                                <option value="">Select Lesson</option>
-                                <option *ngFor="let lesson of lessons" [ngValue]="lesson">{{lesson.title}}</option>
-                            </select>
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2"
-                                (click)="addContent()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                </svg>
-                                Content
-                            </button>
-                        </div>
-                        <div *ngIf="courseForm.get('uploadContent')?.touched && courseForm.get('uploadContent')?.invalid"
-                            class="text-red-500 text-sm mt-1">
-                            This field is required
-                        </div>
-
-                        <!-- Display Added Content -->
-                        <div class="mt-6">
-                            <h3 class="text-xl font-semibold text-white mb-4">Added Content</h3>
-                            <ul class="text-gray-300">
-                                <li *ngFor="let content of contents" class="mb-2 border p-2 rounded-md bg-gray-800">
-                                    Module  : {{ content.module }} <br>
-                                    Lesson  : {{ content.lesson }} <br>
-                                    content : {{ content.cont }}
-                                </li>
-                            </ul>
                         </div>
                     </div>
 
@@ -234,64 +228,183 @@
                     <div *ngIf="currentStep === 3">
                         <h2 class="text-2xl font-semibold mb-6 text-white">Creation</h2>
 
-                        <!-- Module Title & Add Module Button -->
-                        <div class="mb-6 flex items-center space-x-4">
-                            <select
-                                class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                                <option value="">Select Assignments</option>
-                                <option value="programming">Programming</option>
-                                <option value="design">Design</option>
-                                <option value="business">Business</option>
-                                <option value="marketing">Marketing</option>
-                            </select>
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                </svg>
-                                Assignment
-                            </button>
+                        <!-- Assignments Section -->
+                        <div class="mt-6" formArrayName="assignments">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-white">Assignments</h3>
+                                <button type="button" (click)="addAssignment()"
+                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                        class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                    </svg>
+                                    Add Assignment
+                                </button>
+                            </div>
+
+                            <div *ngFor="let assignmentGroup of getAssignmentsArray().controls; let assignmentIndex = index"
+                                [formGroupName]="assignmentIndex" class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="text-white">Assignment {{assignmentIndex + 1}}</h4>
+                                    <button type="button" (click)="deleteAssignment(assignmentIndex)"
+                                        class="text-gray-400 hover:text-red-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path
+                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                            <path
+                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <input type="text" formControlName="assignmentTitle"
+                                    class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                    placeholder="Assignment Title">
+                                <textarea formControlName="assignmentDescription"
+                                    class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 min-h-[100px]"
+                                    placeholder="Assignment Description"></textarea>
+                            </div>
                         </div>
 
-                        <!-- Lesson Title, Select Module & Add Lesson Button -->
-                        <div class="mb-6 flex items-center space-x-4">
-                            <select
-                                class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                                <option value="">Select Quizzes</option>
-                                <option value="programming">Programming</option>
-                                <option value="design">Design</option>
-                                <option value="business">Business</option>
-                                <option value="marketing">Marketing</option>
-                            </select>
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                </svg>
-                                Quiz
-                            </button>
+                        <!-- Quizzes Section -->
+                        <div class="mt-6" formArrayName="quizzes">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-white">Quizzes</h3>
+                                <button type="button" (click)="addQuiz()"
+                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                        class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                    </svg>
+                                    Add Quiz
+                                </button>
+                            </div>
+
+                            <div *ngFor="let quizGroup of getQuizzesArray().controls; let quizIndex = index"
+                                [formGroupName]="quizIndex" class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="text-white">Quiz {{quizIndex + 1}}</h4>
+                                    <button type="button" (click)="deleteQuiz(quizIndex)"
+                                        class="text-gray-400 hover:text-red-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path
+                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                            <path
+                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <input type="text" formControlName="title"
+                                    class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                    placeholder="Quiz Title">
+
+                                <!-- Questions Section -->
+                                <div formArrayName="questions">
+                                    <div *ngFor="let questionGroup of getQuestionsArray(quizIndex).controls; let questionIndex = index"
+                                        [formGroupName]="questionIndex" class="mb-4 p-4 bg-gray-700 rounded-lg">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h5 class="text-white">Question {{questionIndex + 1}}</h5>
+                                            <button type="button" (click)="deleteQuestion(quizIndex, questionIndex)"
+                                                class="text-gray-400 hover:text-red-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                                    <path
+                                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <input type="text" formControlName="questionText"
+                                            class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                            placeholder="Question">
+
+                                        <!-- Options Section -->
+                                        <div formArrayName="options">
+                                            <div *ngFor="let optionGroup of getOptionsArray(quizIndex, questionIndex).controls; let optionIndex = index"
+                                                [formGroupName]="optionIndex" class="flex items-center gap-2 mb-2">
+                                                <input type="checkbox" formControlName="isCorrect"
+                                                    class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500">
+                                                <input type="text" formControlName="optionText"
+                                                    class="flex-1 px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    placeholder="Option">
+                                                <button type="button"
+                                                    (click)="deleteOption(quizIndex, questionIndex, optionIndex)"
+                                                    class="text-gray-400 hover:text-red-500">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                                        <path
+                                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <button type="button" (click)="addOption(quizIndex, questionIndex)"
+                                                class="mt-2 px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-600">
+                                                Add Option
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="button" (click)="addQuestion(quizIndex)"
+                                        class="mt-2 px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-600">
+                                        Add Question
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Upload Content, Select Lesson & Add Content Button -->
-                        <div class="mb-6 flex items-center space-x-4">
-                            <select formControlName="lessonSelection"
-                                class="w-[40rem] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                                <option value="">Select Live Class</option>
-                                <option value="programming">Programming</option>
-                                <option value="design">Design</option>
-                                <option value="business">Business</option>
-                                <option value="marketing">Marketing</option>
-                            </select>
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-md flex item-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                </svg>
-                                Live Class
-                            </button>
+                        <!-- Live Classes Section -->
+                        <div class="mt-6" formArrayName="liveClasses">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-white">Live Classes</h3>
+                                <button type="button" (click)="addLiveClass()"
+                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                        class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                    </svg>
+                                    Add Live Class
+                                </button>
+                            </div>
+
+                            <div *ngFor="let liveClassGroup of getLiveClassesArray().controls; let liveClassIndex = index"
+                                [formGroupName]="liveClassIndex" class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="text-white">Live Class {{liveClassIndex + 1}}</h4>
+                                    <button type="button" (click)="deleteLiveClass(liveClassIndex)"
+                                        class="text-gray-400 hover:text-red-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path
+                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                            <path
+                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <input type="text" formControlName="title"
+                                    class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                    placeholder="Class Title">
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <input type="datetime-local" formControlName="scheduleDate"
+                                        class="px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Schedule Date">
+                                    <input type="text" formControlName="duration"
+                                        class="px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Duration (in minutes)">
+                                </div>
+                                <input type="text" formControlName="meetingLink"
+                                    class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                    placeholder="Meeting Link">
+                                <textarea formControlName="description"
+                                    class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                                    placeholder="Class Description"></textarea>
+                            </div>
                         </div>
                     </div>
 

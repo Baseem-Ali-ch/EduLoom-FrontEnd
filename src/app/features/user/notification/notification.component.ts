@@ -7,7 +7,7 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { Observable, Subscription } from 'rxjs';
 import { selectLoginDetails } from '../../../state/user/user.selector';
 import { Store } from '@ngrx/store';
-import { User } from '../../../core/models/IUser';
+import { IUser } from '../../../core/models/IUser';
 import { AppState } from '../../../state/user/user.state';
 import { jwtDecode } from 'jwt-decode';
 import { OnIdentifyEffects } from '@ngrx/effects';

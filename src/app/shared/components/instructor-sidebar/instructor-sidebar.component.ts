@@ -19,6 +19,7 @@ export class InstructorSidebarComponent implements OnInit, OnDestroy{
   instructor: any;
   private _subscription: Subscription = new Subscription()
   isSidebarOpen: boolean = false
+  profilePhoto: string = ''
 
   constructor(
     private _router: Router,
@@ -35,12 +36,25 @@ export class InstructorSidebarComponent implements OnInit, OnDestroy{
     const loadInstructorDataSubscription = this._profileService.getInstructor().subscribe({
       next: (response: any) => {
         this.instructor = response.instructor;
+        this.getImage();
       },
       error: (error) => {
-        console.error('Error loading user data:', error);
+        // console.error('Error loading user data:', error);
       },
     });
     this._subscription.add(loadInstructorDataSubscription)
+  }
+
+  getImage() {
+    const getImageSubscription = this._profileService.getImage().subscribe({
+      next: (response: any) => {
+        this.profilePhoto = response.signedUrl;
+      },
+      error: (error) => {
+        console.error('Error loading user image:', error);
+      },
+    });
+    this._subscription.add(getImageSubscription);
   }
 
   // get image url

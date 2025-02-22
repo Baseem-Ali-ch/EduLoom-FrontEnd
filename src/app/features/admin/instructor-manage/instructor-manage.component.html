@@ -121,7 +121,7 @@
                                         <td class="px-4 py-4 text-sm whitespace-nowrap">
                                             <div class="flex items-center gap-x-6">
                                                 <button *ngIf="instructor.isActive; else inactiveTemplate"
-                                                    (click)="updateStatus(instructor._id, false)"
+                                                    (click)="updateStatus(instructor._id , false)"
                                                     class="px-2 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600">
                                                     Suspend
                                                 </button>

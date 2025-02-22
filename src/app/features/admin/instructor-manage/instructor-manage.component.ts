@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { InstructorService } from '../../../core/services/admin/instructor.service';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { IInstructor} from '../../../core/models/Instructor';
 
 @Component({
     selector: 'app-instructor-manage',
@@ -13,8 +14,8 @@ import { Subscription } from 'rxjs';
     styleUrl: './instructor-manage.component.css'
 })
 export class InstructorManageComponent implements OnInit, OnDestroy {
-  allInstructors: any[] = [];
-  filteredInstructors: any[] = [];
+  allInstructors: IInstructor[] = [];
+  filteredInstructors: IInstructor[] = [];
   searchTerm: string = '';
   selectedStatus: string = 'all';
   private _subscription: Subscription = new Subscription();

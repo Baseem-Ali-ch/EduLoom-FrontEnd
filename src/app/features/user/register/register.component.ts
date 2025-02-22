@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { register } from '../../../state/user/user.action';
 import { selectIsLoading } from '../../../state/user/user.selector';
 import { AppState } from '../../../state/user/user.state';
-import { User } from '../../../core/models/IUser';
+import { IUser } from '../../../core/models/IUser';
 import { Subscription } from 'rxjs';
 import { PasswordValidatorDirective } from '../../../core/directives/password-validator.directive';
 

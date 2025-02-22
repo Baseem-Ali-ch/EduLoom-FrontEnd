@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { User } from '../../core/models/IUser';
+import { IUser } from '../../core/models/IUser';
 
 export const register = createAction(
   '[Auth] Register',
@@ -8,7 +8,7 @@ export const register = createAction(
 
 export const registerSuccess = createAction(
   '[Auth] Register Success',
-  props<{ user: User }>()
+  props<{ user: IUser }>()
 );
 
 export const registerError = createAction(

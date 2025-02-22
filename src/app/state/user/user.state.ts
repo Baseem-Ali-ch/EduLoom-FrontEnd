@@ -1,5 +1,5 @@
-import { AuthState } from "../../core/models/IUser";
+import { IAuthState } from "../../core/models/IUser";
 
 export interface AppState {
-    registration: AuthState; 
+    registration: IAuthState; 
 }

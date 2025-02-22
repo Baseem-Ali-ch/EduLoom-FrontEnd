@@ -4,6 +4,7 @@ import { UsersService } from '../../../core/services/admin/users.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { IUser } from '../../../core/models/IUser';
 
 @Component({
     selector: 'app-user-manage',
@@ -13,9 +14,9 @@ import { Subscription } from 'rxjs';
     styleUrl: './user-manage.component.css'
 })
 export class UserManageComponent implements OnInit, OnDestroy {
-  allUsers: any[] = [];
-  filteredUsers: any[] = [];
-  displayedUsers: any[] = [];
+  allUsers: IUser[] = [];
+  filteredUsers: IUser[] = [];
+  displayedUsers: IUser[] = [];
   searchTerm: string = '';
   selectedStatus: string = 'all';
   currentPage: number = 1;

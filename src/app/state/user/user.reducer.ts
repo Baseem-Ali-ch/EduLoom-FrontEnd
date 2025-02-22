@@ -1,8 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
-import { AuthState } from '../../core/models/IUser';
+import { IAuthState } from '../../core/models/IUser';
 import { login, register, registerError, registerSuccess } from './user.action';
 
-const initialState: AuthState = {
+const initialState: IAuthState = {
   user: null,
   isAuthenticated: false,
   loading: false,

@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../../models/IUser';
+import { IUser } from '../../models/IUser';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
-  private _apiUrl = 'http://localhost:3001';
+  private _apiUrl = environment.apiUrl;
 
   constructor(private _http: HttpClient) {}
 
@@ -21,8 +22,12 @@ export class ProfileService {
     return this._http.get(`${this._apiUrl}/admin/getUser`);
   }
 
+  getImage(): Observable<any> {
+    return this._http.get(`${this._apiUrl}/admin/getImage`);
+  }
+
   // update user details
-  updateUser(userData: User): Observable<any> {
+  updateUser(userData: IUser): Observable<any> {
     return this._http.put(`${this._apiUrl}/admin/profileUpdate`, userData);
   }
 
@@ -33,11 +38,11 @@ export class ProfileService {
   }
 
   // get full image URL
-  getFullImageUrl(photoUrl: string): string {
-    if (photoUrl && !photoUrl.startsWith('http')) {
-      return `${this._apiUrl}${photoUrl}`;
+  getFullImageUrl(photoUrl: string | undefined): string {
+    if (!photoUrl) {
+      return 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg';
     }
-    return photoUrl;
+    return photoUrl.startsWith('http') ? photoUrl : `${this._apiUrl}${photoUrl.startsWith('/') ? '' : '/'}${photoUrl}`;
   }
 
   // change password

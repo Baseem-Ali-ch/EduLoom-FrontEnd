@@ -3,7 +3,7 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { AppState } from '../../../state/user/user.state';
 import { Store } from '@ngrx/store';
 import { selectUser } from '../../../state/user/user.selector';
-import { User } from '../../../core/models/IUser';
+import { IUser } from '../../../core/models/IUser';
 import { Observable, Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 

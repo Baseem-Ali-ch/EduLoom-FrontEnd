@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 export class AdminSidebarComponent implements OnInit, OnDestroy{
   user: any;
   private _subscription: Subscription = new Subscription()
+  profilePhoto: string = ''
 
   constructor(
     private _router: Router,
@@ -33,13 +34,26 @@ export class AdminSidebarComponent implements OnInit, OnDestroy{
     const loadUserDataSubscription = this._profileService.getUser().subscribe({
       next: (response: any) => {
         this.user = response.user;
+        this.getImage();
       },
       error: (error) => {
-        console.error('Error loading user data:', error);
+        // console.error('Error loading user data:', error);
       },
     });
     this._subscription.add(loadUserDataSubscription)
   }
+  getImage() {
+    const getImageSubscription = this._profileService.getImage().subscribe({
+      next: (response: any) => {
+        this.profilePhoto = response.signedUrl;
+      },
+      error: (error) => {
+        console.error('Error loading user image:', error);
+      },
+    });
+    this._subscription.add(getImageSubscription);
+  }
+
 
   // get image url
   getImageUrl(photoUrl: string): string {

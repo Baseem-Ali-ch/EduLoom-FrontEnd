@@ -9,7 +9,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AppState } from './state/user/user.state';
 import { GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
 import { ReactiveFormsModule } from '@angular/forms';
-import { studentAuthInterceptor } from './core/interceptors/user/auth.interceptor.interceptor';
+import { studentAuthInterceptor } from './core/interceptors/auth.interceptor.interceptor';
+import { errorHandleInterceptor } from './core/interceptors/error-handle.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,5 +33,6 @@ export const appConfig: ApplicationConfig = {
     },
     ReactiveFormsModule,
     provideHttpClient(withInterceptors([studentAuthInterceptor])),
+    provideHttpClient(withInterceptors([errorHandleInterceptor])),
   ],
 };

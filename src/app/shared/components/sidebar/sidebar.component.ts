@@ -8,22 +8,19 @@ import { ProfileService } from '../../../core/services/user/profile.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-sidebar',
-    standalone: true,
-    imports: [CommonModule, RouterModule],
-    templateUrl: './sidebar.component.html',
-    styleUrl: './sidebar.component.css'
+  selector: 'app-sidebar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   user: any;
-  private _subscription: Subscription = new Subscription()
+  private _subscription: Subscription = new Subscription();
   isSidebarOpen: boolean = false;
+  profilePhoto: string = '';
 
-  constructor(
-    private _router: Router,
-    private s_tore: Store<AppState>,
-    private _profileService: ProfileService
-  ) {}
+  constructor(private _router: Router, private s_tore: Store<AppState>, private _profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.loadUserData();
@@ -34,12 +31,25 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const loadUserDataSubscription = this._profileService.getUser().subscribe({
       next: (response: any) => {
         this.user = response.user;
+        this.getImage();
       },
       error: (error) => {
-        console.error('Error loading user data:', error);
+        // console.error('Error loading user data:', error);
       },
     });
-    this._subscription.add(loadUserDataSubscription)
+    this._subscription.add(loadUserDataSubscription);
+  }
+
+  getImage() {
+    const getImageSubscription = this._profileService.getImage().subscribe({
+      next: (response: any) => {
+        this.profilePhoto = response.signedUrl;
+      },
+      error: (error) => {
+        console.error('Error loading user image:', error);
+      },
+    });
+    this._subscription.add(getImageSubscription);
   }
 
   // get image url
@@ -51,6 +61,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   onLogout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('token');
+    localStorage.removeItem('refresh-token');
 
     this._router.navigate(['/student/login']);
     if (!localStorage.getItem('isLoggedIn')) {
@@ -83,6 +94,4 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
   }
-
-  
 }

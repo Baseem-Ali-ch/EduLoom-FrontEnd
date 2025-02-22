@@ -93,12 +93,12 @@
                                 class="hidden">
                             <button (click)="fileInput.click()"
                                 class="mt-2.5 mx-3 text-md text-blue-500 hover:underline">
-                                {{ instructor.profilePhoto ? 'Change Photo' : 'Add Photo' }}
+                                {{ profilePhoto ? 'Change Photo' : 'Add Photo' }}
                             </button>
                         </div>
 
                         <div class="mt-4 mb-6 flex justify-center">
-                            <img [src]="getImageUrl(instructor.profilePhoto) || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1738060979~exp=1738064579~hmac=dcfa5142a7195b0afef76e8e5eb79a93d6e2a525a32232427e57b69530685dbe&w=740'"
+                            <img [src]="getImageUrl(profilePhoto) || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1738060979~exp=1738064579~hmac=dcfa5142a7195b0afef76e8e5eb79a93d6e2a525a32232427e57b69530685dbe&w=740'"
                                 class="w-32 h-32 rounded-full object-cover" alt="Profile photo">
                         </div>
                     </div>
