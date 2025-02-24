@@ -43,6 +43,9 @@ export const routes: Routes = [
       { path: 'profile', loadComponent: () => import('./features/admin/profile/profile.component').then((c) => c.ProfileComponent), canActivate: [admAuthGuard] },
       { path: 'students', loadComponent: () => import('./features/admin/user-manage/user-manage.component').then((c) => c.UserManageComponent), canActivate: [admAuthGuard] },
       { path: 'instructors', loadComponent: () => import('./features/admin/instructor-manage/instructor-manage.component').then((c) => c.InstructorManageComponent), canActivate: [admAuthGuard] },
+      { path: 'offer', loadComponent: () => import('./features/admin/offer-manage/offer-manage.component').then((c) => c.OfferManageComponent), canActivate: [admAuthGuard]},
+      { path: 'coupon', loadComponent: () => import('./features/admin/coupon-manage/coupon-manage.component').then((c) => c.CouponManageComponent), canActivate: [admAuthGuard]}
+
     ],
   },
 

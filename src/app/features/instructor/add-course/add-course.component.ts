@@ -1,70 +1,85 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { InstructorSidebarComponent } from '../../../shared/components/instructor-sidebar/instructor-sidebar.component';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CourseServiceService } from '../../../core/services/instructor/course.service.service';
 import { ILesson, IModule } from '../../../core/models/Instructor';
+import { InstructorSidebarComponent } from '../../../shared/components/instructor-sidebar/instructor-sidebar.component';
 
 @Component({
   selector: 'app-add-course',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, InstructorSidebarComponent],
   templateUrl: './add-course.component.html',
-  styleUrl: './add-course.component.css',
+  styleUrls: ['./add-course.component.css'],
 })
 export class AddCourseComponent implements OnInit, OnDestroy {
   currentStep: number = 1;
   totalSteps: number = 4;
   courseForm!: FormGroup;
-  modules: IModule[] = [];
-  currentModule: IModule = { title: '', lessons: [] };
-  contents: { cont: any; lesson: string; module: string }[] = [];
   private _subscription: Subscription = new Subscription();
 
   constructor(private _fb: FormBuilder, private _courseService: CourseServiceService) {}
 
   ngOnInit(): void {
-    this.form();
-    this.addModule();
+    this.initializeForm();
+    this.addModule(); // Add an initial module
   }
 
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
   }
+  get coursePreview() {
+    return this.courseForm.value;
+  }
 
-  form(): void {
+  initializeForm(): void {
     this.courseForm = this._fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', [Validators.required, Validators.minLength(5)]],
       category: ['', Validators.required],
       difficultyLevel: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+      coupon: [''],
+      offer: [''],
       modules: this._fb.array([]),
+      assignments: this._fb.array([]),
+      quizzes: this._fb.array([]),
+      liveClasses: this._fb.array([]),
     });
   }
 
-  nextStep() {
-    if (this.currentStep < this.totalSteps) {
+  // Stepper Navigation
+  nextStep(): void {
+    if (this.currentStep < this.totalSteps && this.isStepValid()) {
       this.currentStep++;
     }
   }
 
-  previousStep() {
+  previousStep(): void {
     if (this.currentStep > 1) {
       this.currentStep--;
     }
   }
 
-  initializeModule() {
-    this.currentModule = {
-      title: '',
-      lessons: [],
-    };
-    this.modules.push(this.currentModule);
+  isStepValid(): boolean {
+    switch (this.currentStep) {
+      case 1:
+        return (this.courseForm.get('title')?.valid && this.courseForm.get('description')?.valid && this.courseForm.get('category')?.valid && this.courseForm.get('difficultyLevel')?.valid) || false;
+      case 2:
+        return this.modulesArray.valid;
+      case 3:
+        // Optional validation for assignments, quizzes, liveClasses
+        return true; // Adjust based on your requirements
+      case 4:
+        return this.courseForm.get('price')?.valid || false;
+      default:
+        return true;
+    }
   }
 
+  // Module Methods
   get modulesArray(): FormArray {
     return this.courseForm.get('modules') as FormArray;
   }
@@ -73,16 +88,13 @@ export class AddCourseComponent implements OnInit, OnDestroy {
     return this.modulesArray.at(moduleIndex).get('lessons') as FormArray;
   }
 
-  // Module Methods
   addModule(): void {
     const moduleGroup = this._fb.group({
       title: ['', Validators.required],
       lessons: this._fb.array([]),
     });
-
     this.modulesArray.push(moduleGroup);
-    // Add initial lesson to new module
-    this.addLesson(this.modulesArray.length - 1);
+    this.addLesson(this.modulesArray.length - 1); // Add initial lesson
   }
 
   deleteModule(moduleIndex: number): void {
@@ -94,15 +106,15 @@ export class AddCourseComponent implements OnInit, OnDestroy {
     const lessonGroup = this._fb.group({
       title: ['', Validators.required],
       content: ['', Validators.required],
+      document: [''],
     });
-
     this.getLessonsArray(moduleIndex).push(lessonGroup);
   }
 
   deleteLesson(moduleIndex: number, lessonIndex: number): void {
     this.getLessonsArray(moduleIndex).removeAt(lessonIndex);
   }
-  
+
   // Assignments
   getAssignmentsArray(): FormArray {
     return this.courseForm.get('assignments') as FormArray;
@@ -182,7 +194,6 @@ export class AddCourseComponent implements OnInit, OnDestroy {
       scheduleDate: ['', Validators.required],
       duration: ['', Validators.required],
       meetingLink: ['', Validators.required],
-      description: ['', Validators.required],
     });
     this.getLiveClassesArray().push(liveClassGroup);
   }
@@ -191,8 +202,9 @@ export class AddCourseComponent implements OnInit, OnDestroy {
     this.getLiveClassesArray().removeAt(index);
   }
 
+  // Form Submission
   onSubmit(): void {
-    if (this.courseForm) {
+    if (this.courseForm.valid) {
       const courseData = this.courseForm.value;
       console.log('Submitting course data:', courseData);
 
@@ -211,6 +223,8 @@ export class AddCourseComponent implements OnInit, OnDestroy {
           });
           this.courseForm.reset();
           this.currentStep = 1;
+          this.initializeForm(); // Reinitialize form with empty arrays
+          this.addModule(); // Add initial module after reset
         },
         error: (error) => {
           console.error('Error creating course:', error);
@@ -230,7 +244,18 @@ export class AddCourseComponent implements OnInit, OnDestroy {
 
       this._subscription.add(subscription);
     } else {
-      // this.courseForm.markAllAsTouched();
+      this.courseForm.markAllAsTouched();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please fill all required fields',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        background: 'rgb(8, 10, 24)',
+        color: 'white',
+      });
     }
   }
 }

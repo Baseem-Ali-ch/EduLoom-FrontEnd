@@ -29,6 +29,9 @@ export class InstructorSidebarComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.loadInstructorData();
+    this._profileService.profilePhoto$.subscribe((photoUrl) => {
+      this.profilePhoto = photoUrl!;
+    });
   }
 
   // display the user details

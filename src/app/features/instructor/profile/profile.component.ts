@@ -69,6 +69,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       const fileSubscription = this._profileService.uploadProfilePhoto(formData).subscribe({
         next: (response) => {
           this.instructor.profilePhoto = response.photoUrl;
+          this._profileService.updateProfilePhoto(response.photoUrl);
           Swal.fire({
             icon: 'success',
             title: response.message,

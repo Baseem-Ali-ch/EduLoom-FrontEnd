@@ -71,45 +71,38 @@
 
 
                 <!-- Form Content -->
-                <form [formGroup]="courseForm" class=" shadow-md p-6 ">
-
+                <form [formGroup]="courseForm" class="shadow-md p-6">
                     <!-- Step 1 Content -->
                     <div *ngIf="currentStep === 1">
-                        <h2 class="text-2xl font-semibold mb-6 text-white">Course Basic Information</h2>
+                        <!-- <h2 class="text-2xl font-semibold mb-6 text-white">Course Basic Information</h2> -->
 
                         <!-- Title -->
                         <div class="mb-6">
-                            <label class="block text-sm font-medium text-white mb-2">
-                                Course Title
-                            </label>
+                            <label class="block text-sm font-medium text-white mb-2">Course Title</label>
                             <input type="text" formControlName="title"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
                                 placeholder="Enter course title">
                             <div *ngIf="courseForm.get('title')?.touched && courseForm.get('title')?.invalid"
                                 class="text-red-500 text-sm mt-1">
-                                Title is required
+                                Title is required (minimum 5 characters)
                             </div>
                         </div>
 
                         <!-- Description -->
                         <div class="mb-6">
-                            <label class="block text-sm font-medium text-white mb-2">
-                                Description
-                            </label>
+                            <label class="block text-sm font-medium text-white mb-2">Description</label>
                             <textarea formControlName="description" rows="4"
                                 class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Enter course description"></textarea>
                             <div *ngIf="courseForm.get('description')?.touched && courseForm.get('description')?.invalid"
                                 class="text-red-500 text-sm mt-1">
-                                Description is required
+                                Description is required (minimum 5 characters)
                             </div>
                         </div>
 
                         <!-- Category -->
                         <div class="mb-6">
-                            <label class="block text-sm font-medium text-white mb-2">
-                                Category
-                            </label>
+                            <label class="block text-sm font-medium text-white mb-2">Category</label>
                             <select formControlName="category"
                                 class="w-full px-3 bg-gray-900 text-gray-300 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">Select a category</option>
@@ -117,6 +110,17 @@
                                 <option value="design">Design</option>
                                 <option value="business">Business</option>
                                 <option value="marketing">Marketing</option>
+                                <option value="technology">Technology</option>
+                                <option value="data-science">Data Science</option>
+                                <option value="health-fitness">Health & Fitness</option>
+                                <option value="education">Education</option>
+                                <option value="art-photography">Art & Photography</option>
+                                <option value="music">Music</option>
+                                <option value="languages">Languages</option>
+                                <option value="personal-development">Personal Development</option>
+                                <option value="finance">Finance</option>
+                                <option value="engineering">Engineering</option>
+                                <option value="entrepreneurship">Entrepreneurship</option>
                             </select>
                             <div *ngIf="courseForm.get('category')?.touched && courseForm.get('category')?.invalid"
                                 class="text-red-500 text-sm mt-1">
@@ -126,9 +130,7 @@
 
                         <!-- Difficulty Level -->
                         <div class="mb-6">
-                            <label class="block text-sm font-medium text-white mb-2">
-                                Difficulty Level
-                            </label>
+                            <label class="block text-sm font-medium text-white mb-2">Difficulty Level</label>
                             <select formControlName="difficultyLevel"
                                 class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">Select difficulty level</option>
@@ -145,9 +147,9 @@
 
                     <!-- Step 2 Content -->
                     <div *ngIf="currentStep === 2">
-                        <h2 class="text-2xl font-semibold mb-6 text-white">Module Creation</h2>
+                        <!-- <h2 class="text-2xl font-semibold mb-6 text-white">Module Creation</h2> -->
 
-                        <div class="w-full max-w-4xl mx-auto p-4 " formArrayName="modules">
+                        <div class="w-full max-w-4xl mx-auto p-4" formArrayName="modules">
                             <div *ngFor="let moduleGroup of modulesArray.controls; let moduleIndex = index"
                                 [formGroupName]="moduleIndex" class="mb-6">
                                 <div class="bg-gray-900 rounded-lg p-6 border border-gray-300">
@@ -175,7 +177,6 @@
                                     <div class="space-y-4" formArrayName="lessons">
                                         <div *ngFor="let lessonGroup of getLessonsArray(moduleIndex).controls; let lessonIndex = index"
                                             [formGroupName]="lessonIndex" class="bg-gray-800 p-4 rounded-lg">
-
                                             <div class="flex justify-between items-center mb-2">
                                                 <h4 class="text-white">Lesson {{lessonIndex + 1}}</h4>
                                                 <button type="button" (click)="deleteLesson(moduleIndex, lessonIndex)"
@@ -197,6 +198,10 @@
                                             <textarea formControlName="content"
                                                 class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 min-h-[100px]"
                                                 placeholder="Lesson Content"></textarea>
+
+                                            <input type="file" formControlName="document"
+                                                class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                                                placeholder="Content Upload">
                                         </div>
 
                                         <button type="button" (click)="addLesson(moduleIndex)"
@@ -226,14 +231,14 @@
 
                     <!-- Step 3 Content -->
                     <div *ngIf="currentStep === 3">
-                        <h2 class="text-2xl font-semibold mb-6 text-white">Creation</h2>
+                        <!-- <h2 class="text-2xl font-semibold mb-6 text-white">Creation</h2> -->
 
                         <!-- Assignments Section -->
                         <div class="mt-6" formArrayName="assignments">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-semibold text-white">Assignments</h3>
+                            <div class="items-center mb-4">
+                                <h3 class="text-sm font-medium text-white">Assignments</h3>
                                 <button type="button" (click)="addAssignment()"
-                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-6">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                         class="bi bi-plus" viewBox="0 0 16 16">
                                         <path
@@ -269,10 +274,10 @@
 
                         <!-- Quizzes Section -->
                         <div class="mt-6" formArrayName="quizzes">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-semibold text-white">Quizzes</h3>
+                            <div class="items-center justify-between mb-4">
+                                <h3 class="text-sm font-medium text-white">Quizzes</h3>
                                 <button type="button" (click)="addQuiz()"
-                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    class="flex mt-6 items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                         class="bi bi-plus" viewBox="0 0 16 16">
                                         <path
@@ -359,10 +364,10 @@
 
                         <!-- Live Classes Section -->
                         <div class="mt-6" formArrayName="liveClasses">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-semibold text-white">Live Classes</h3>
+                            <div class="items-center justify-between mb-4">
+                                <h3 class="text-sm font-medium text-white">Live Classes</h3>
                                 <button type="button" (click)="addLiveClass()"
-                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    class="flex mt-6 items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                         class="bi bi-plus" viewBox="0 0 16 16">
                                         <path
@@ -390,68 +395,61 @@
                                 <input type="text" formControlName="title"
                                     class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                                     placeholder="Class Title">
-                                <div class="grid grid-cols-2 gap-4 mb-4">
-                                    <input type="datetime-local" formControlName="scheduleDate"
-                                        class="px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Schedule Date">
-                                    <input type="text" formControlName="duration"
-                                        class="px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Duration (in minutes)">
-                                </div>
                                 <input type="text" formControlName="meetingLink"
                                     class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                                     placeholder="Meeting Link">
-                                <textarea formControlName="description"
-                                    class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
-                                    placeholder="Class Description"></textarea>
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <input type="datetime-local" formControlName="scheduleDate"
+                                        class="px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="text" formControlName="duration"
+                                        class="px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Sheduled Time">
+                                </div>
+
                             </div>
                         </div>
                     </div>
 
                     <!-- Step 4 Content -->
                     <div *ngIf="currentStep === 4">
-                        <h2 class="text-2xl font-semibold mb-6 text-white">Pricing</h2>
+                        <!-- <h2 class="text-2xl font-semibold mb-6 text-white">Pricing</h2> -->
 
-                        <div class=" flex items-center space-x-4">
+                        <div class="items-center">
+                            <label class="block text-sm font-medium text-white mb-2">Price</label>
                             <input type="text" formControlName="price"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300"
                                 placeholder="Enter Price">
+                            <div *ngIf="courseForm.get('price')?.touched && courseForm.get('price')?.invalid"
+                                class="text-red-500 text-sm mt-1">
+                                Price is required and must be a valid number
+                            </div>
                         </div>
-                        <div *ngIf="courseForm.get('price')?.touched && courseForm.get('price')?.invalid"
-                            class="text-red-500 text-sm mt-1">
-                            This field is required
-                        </div>
-
-                        <!-- Lesson Title, Select Module & Add Lesson Button -->
-                        <div class="mt-6 flex items-center space-x-4">
-                            <select
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                                <option value="">Select Offer</option>
-                                <option value="programming">Programming</option>
-                                <option value="design">Design</option>
-                                <option value="business">Business</option>
-                                <option value="marketing">Marketing</option>
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-white mb-2">Available Offers</label>
+                            <select formControlName="offer"
+                                class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select offer</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
                             </select>
                         </div>
-
-                        <!-- Upload Content, Select Lesson & Add Content Button -->
-                        <div class="mt-6 flex items-center space-x-4">
-                            <select formControlName="lessonSelection"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900 text-gray-300">
-                                <option value="">Select Coupon</option>
-                                <option value="programming">Programming</option>
-                                <option value="design">Design</option>
-                                <option value="business">Business</option>
-                                <option value="marketing">Marketing</option>
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-white mb-2">Available Coupon</label>
+                            <select formControlName="coupon"
+                                class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select coupon</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
                             </select>
                         </div>
-
                     </div>
 
                     <!-- Navigation Buttons -->
                     <div class="flex justify-between mt-8">
-                        <button disabled *ngIf="currentStep === 1" (click)="previousStep()" type="button"
-                            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        <button *ngIf="currentStep === 1" type="button" disabled
+                            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md cursor-not-allowed">
                             Previous
                         </button>
                         <button *ngIf="currentStep > 1" (click)="previousStep()" type="button"
@@ -459,7 +457,8 @@
                             Previous
                         </button>
                         <button *ngIf="currentStep < totalSteps" (click)="nextStep()" type="button"
-                            class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            [disabled]="!isStepValid()">
                             Next
                         </button>
                         <button *ngIf="currentStep === totalSteps" (click)="onSubmit()" type="button"
@@ -467,6 +466,138 @@
                             Submit
                         </button>
                     </div>
+
+                    <div *ngIf="currentStep === 4">
+                        <h2 class="text-2xl font-semibold mb-6 text-white mt-6">Preview</h2>
+
+                        <div class="bg-gray-800 p-6 rounded-lg text-white shadow-md">
+                            <!-- Course Basic Info -->
+                            <div class="mb-8">
+                                <h3 class="text-xl font-semibold text-gray-100 mb-4 border-b border-gray-700 pb-2">
+                                    Course Details</h3>
+                                <div class="space-y-3 text-gray-300">
+                                    <p><span class="font-medium text-gray-100">Title:</span> {{ coursePreview.title ||
+                                        'Not provided' }}</p>
+                                    <p><span class="font-medium text-gray-100">Description:</span> {{
+                                        coursePreview.description || 'Not provided' }}</p>
+                                    <p><span class="font-medium text-gray-100">Category:</span> {{
+                                        coursePreview.category || 'Not provided' }}</p>
+                                    <p><span class="font-medium text-gray-100">Difficulty Level:</span> {{
+                                        coursePreview.difficultyLevel || 'Not provided' }}</p>
+                                    <p><span class="font-medium text-gray-100">Price:</span> ₹{{
+                                        coursePreview.price||
+                                        'Not provided' }}</p>
+                                    <p><span class="font-medium text-gray-100">Offer ID:</span> {{ coursePreview.offer
+                                        || 'Not provided' }}</p>
+                                    <p><span class="font-medium text-gray-100">Coupon ID:</span> {{ coursePreview.coupon
+                                        || 'Not provided' }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Modules -->
+                            <div class="mb-8" *ngIf="coursePreview.modules?.length > 0">
+                                <h3 class="text-xl font-semibold text-gray-100 mb-4 border-b border-gray-700 pb-2">
+                                    Modules</h3>
+                                <div class="space-y-6">
+                                    <div *ngFor="let module of coursePreview.modules; let i = index"
+                                        class="bg-gray-900 p-4 rounded-md">
+                                        <h4 class="text-lg font-semibold text-gray-100 mb-3">Module {{ i + 1 }}: {{
+                                            module.title || 'Untitled' }}</h4>
+                                        <ul class="list-disc pl-6 space-y-4 text-gray-300">
+                                            <li *ngFor="let lesson of module.lessons; let j = index">
+                                                <div class="space-y-1">
+                                                    <p><span class="font-medium text-gray-100">Lesson {{ j + 1
+                                                            }}:</span> {{ lesson.title || 'Untitled' }}</p>
+                                                    <p class="text-gray-400">{{ lesson.content || 'No content provided'
+                                                        }}</p>
+                                                    <p class="text-gray-400">{{ lesson.document || 'No document
+                                                        provided' }}</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <p *ngIf="!coursePreview.modules?.length" class="text-gray-400 italic mb-8">No modules added
+                                yet.</p>
+
+                            <!-- Assignments -->
+                            <div class="mb-8" *ngIf="coursePreview.assignments?.length > 0">
+                                <h3 class="text-xl font-semibold text-gray-100 mb-4 border-b border-gray-700 pb-2">
+                                    Assignments</h3>
+                                <div class="space-y-6">
+                                    <div *ngFor="let assignment of coursePreview.assignments; let i = index"
+                                        class="bg-gray-900 p-4 rounded-md">
+                                        <h4 class="text-lg font-semibold text-gray-100 mb-2">Assignment {{ i + 1 }}: {{
+                                            assignment.assignmentTitle || 'Untitled' }}</h4>
+                                        <p class="text-gray-300 leading-relaxed">{{ assignment.assignmentDescription ||
+                                            'No description provided' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p *ngIf="!coursePreview.assignments?.length" class="text-gray-400 italic mb-8">No
+                                assignments added yet.</p>
+
+                            <!-- Quizzes -->
+                            <div class="mb-8" *ngIf="coursePreview.quizzes?.length > 0">
+                                <h3 class="text-xl font-semibold text-gray-100 mb-4 border-b border-gray-700 pb-2">
+                                    Quizzes</h3>
+                                <div class="space-y-6">
+                                    <div *ngFor="let quiz of coursePreview.quizzes; let i = index"
+                                        class="bg-gray-900 p-4 rounded-md">
+                                        <h4 class="text-lg font-semibold text-gray-100 mb-3">Quiz {{ i + 1 }}: {{
+                                            quiz.title || 'Untitled' }}</h4>
+                                        <ul class="list-disc pl-6 space-y-4 text-gray-300">
+                                            <li *ngFor="let question of quiz.questions; let j = index">
+                                                <p class="font-medium text-gray-100">Question {{ j + 1 }}:</p>
+                                                <p class="mb-2">{{ question.questionText || 'No question text' }}</p>
+                                                <ul class="list-circle pl-6 space-y-1">
+                                                    <li *ngFor="let option of question.options; let k = index"
+                                                        class="flex items-center">
+                                                        <span>{{ option.optionText || 'No text' }}</span>
+                                                        <span *ngIf="option.isCorrect"
+                                                            class="ml-2 text-green-400 text-sm font-medium">(Correct)</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <p *ngIf="!coursePreview.quizzes?.length" class="text-gray-400 italic mb-8">No quizzes added
+                                yet.</p>
+
+                            <!-- Live Classes -->
+                            <div class="mb-8" *ngIf="coursePreview.liveClasses?.length > 0">
+                                <h3 class="text-xl font-semibold text-gray-100 mb-4 border-b border-gray-700 pb-2">Live
+                                    Classes</h3>
+                                <div class="space-y-6">
+                                    <div *ngFor="let liveClass of coursePreview.liveClasses; let i = index"
+                                        class="bg-gray-900 p-4 rounded-md">
+                                        <h4 class="text-lg font-semibold text-gray-100 mb-2">Live Class {{ i + 1 }}: {{
+                                            liveClass.title || 'Untitled' }}</h4>
+                                        <div class="space-y-2 text-gray-300">
+                                            <p><span class="font-medium text-gray-100">Schedule:</span> {{
+                                                liveClass.scheduleDate | date:'medium' || 'Not set' }}</p>
+                                            <p><span class="font-medium text-gray-100">Duration:</span> {{
+                                                liveClass.duration || 'Not set' }} minutes</p>
+                                            <p><span class="font-medium text-gray-100">Meeting Link:</span>
+                                                <a [href]="liveClass.meetingLink" target="_blank"
+                                                    class="text-blue-400 hover:underline">
+                                                    {{ liveClass.meetingLink || 'Not provided' }}
+                                                </a>
+                                            </p>
+                                            <p class="leading-relaxed">{{ liveClass.description || 'No description
+                                                provided' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p *ngIf="!coursePreview.liveClasses?.length" class="text-gray-400 italic mb-8">No live
+                                classes added yet.</p>
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>

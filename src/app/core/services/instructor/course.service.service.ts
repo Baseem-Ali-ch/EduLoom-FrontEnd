@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ICourseForm } from '../../models/ICourse';
+import { ICourse } from '../../models/ICourse';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class CourseServiceService {
 
   constructor(private _http: HttpClient) {}
 
-  createCourse(courseData: any): Observable<any> {
+  createCourse(courseData: ICourse): Observable<any> {
     return this._http.post(`${this._apiUrl}/instructor/create-course`, { courseData });
   }
 }

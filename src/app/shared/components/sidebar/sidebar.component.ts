@@ -24,6 +24,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadUserData();
+    this._profileService.profilePhoto$.subscribe((photoUrl) => {
+      this.profilePhoto = photoUrl!;
+    });
   }
 
   // display the user details

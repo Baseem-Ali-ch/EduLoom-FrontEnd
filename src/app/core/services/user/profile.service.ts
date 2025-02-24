@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { IInstructor } from '../../models/Instructor';
 import { IUser } from '../../models/IUser';
@@ -10,6 +10,8 @@ import { environment } from '../../../../environments/environment';
 })
 export class ProfileService {
   private _apiUrl = environment.apiUrl;
+  private _photoUrlSubject = new BehaviorSubject<string | null>(null)
+  profilePhoto$ = this._photoUrlSubject.asObservable()
 
   constructor(private _http: HttpClient) {}
 
@@ -27,9 +29,12 @@ export class ProfileService {
     return this._http.put(`${this._apiUrl}/student/profileUpdate`, userData);
   }
 
+  updateProfilePhoto(photoUrl: string) {
+    this._photoUrlSubject.next(photoUrl);
+  }
+
   // upload profile photo
-  uploadProfilePhoto(formData: FormData): Observable<any> {
-    console.log('form data', formData);
+  uploadProfilePhoto(formData: FormData | string): Observable<any> {
     return this._http.post(`${this._apiUrl}/student/profile-photo`, formData);
   }
 
