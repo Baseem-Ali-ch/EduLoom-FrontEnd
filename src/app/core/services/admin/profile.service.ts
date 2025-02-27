@@ -9,8 +9,9 @@ import { environment } from '../../../../environments/environment';
 })
 export class ProfileService {
   private _apiUrl = environment.apiUrl;
-   private _photoUrlSubject = new BehaviorSubject<string | null>(null)
-    profilePhoto$ = this._photoUrlSubject.asObservable()
+  private _photoUrlSubject = new BehaviorSubject<string | null>(null);
+
+  profilePhoto$ = this._photoUrlSubject.asObservable();
 
   constructor(private _http: HttpClient) {}
 

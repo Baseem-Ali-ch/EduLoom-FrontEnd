@@ -27,6 +27,7 @@ export const routes: Routes = [
       { path: 'dashboard', loadComponent: () => import('./features/user/dashboard/dashboard.component').then((c) => c.DashboardComponent), canActivate: [authGuard] },
       { path: 'profile', loadComponent: () => import('./features/user/profile/profile.component').then((c) => c.ProfileComponent), canActivate: [authGuard] },
       { path: 'notification', loadComponent: () => import('./features/user/notification/notification.component').then((c) => c.NotificationComponent), canActivate: [authGuard] },
+      { path: 'course/:id', loadComponent: () => import('./features/user/course-det/course-det.component').then((c) => c.CourseDetComponent), canActivate: [insAuthGuard] },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
@@ -63,6 +64,7 @@ export const routes: Routes = [
       { path: 'profile', loadComponent: () => import('./features/instructor/profile/profile.component').then((c) => c.ProfileComponent), canActivate: [insAuthGuard] },
       { path: 'courses', loadComponent: () => import('./features/instructor/course/course.component').then((c) => c.CourseComponent), canActivate: [insAuthGuard] },
       { path: 'add-course', loadComponent: () => import('./features/instructor/add-course/add-course.component').then((c) => c.AddCourseComponent), canActivate: [insAuthGuard] },
+      { path: 'course/:id', loadComponent: () => import('./features/instructor/course-det/course-det.component').then((c) => c.CourseDetComponent), canActivate: [insAuthGuard] },
     ],
   },
 

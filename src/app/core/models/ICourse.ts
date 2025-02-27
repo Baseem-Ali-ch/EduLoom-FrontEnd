@@ -16,12 +16,13 @@
 //   coupon?: string;
 // }
 
-
+import { ICoupon, IOffer } from './IAdmin';
+import { IInstructor } from './Instructor';
 
 export interface Lesson {
   title: string;
   content: string;
-  document?: string; 
+  document?: string;
 }
 
 export interface Module {
@@ -51,20 +52,24 @@ export interface Quiz {
 
 export interface LiveClass {
   title: string;
-  scheduleDate: string; 
-  duration: string; 
+  scheduleDate: string;
+  duration: string;
   meetingLink: string;
   description: string;
 }
 
 export interface ICourse {
+  _id?: string;
   title: string;
   description: string;
   category: string;
   difficultyLevel: string;
-  price: string; 
+  price: number;
   modules: Module[];
   assignments: Assignment[];
   quizzes: Quiz[];
   liveClasses: LiveClass[];
+  instructorId?: IInstructor;
+  offer?: IOffer;
+  coupon?: ICoupon;
 }

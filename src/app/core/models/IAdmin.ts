@@ -7,11 +7,12 @@ export interface IOffer {
 }
 
 export interface ICoupon {
-  couponId: string;
+  _id?: string
+  couponCode: string;
   discount: number;
-  description: number;
-  expirtyDate: string;
-  minPurchaseAmt: number;
-  maxPurchaseAmt: number;
-  isActive: boolean
+  description: string;
+  expDate: string;
+  minPurAmt: number;
+  maxPurAmt: number;
+  status: boolean
 }

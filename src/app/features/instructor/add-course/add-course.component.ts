@@ -4,8 +4,10 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CourseServiceService } from '../../../core/services/instructor/course.service.service';
-import { ILesson, IModule } from '../../../core/models/Instructor';
 import { InstructorSidebarComponent } from '../../../shared/components/instructor-sidebar/instructor-sidebar.component';
+import { CouponService } from '../../../core/services/admin/coupon.service';
+import { ICoupon, IOffer } from '../../../core/models/IAdmin';
+import { OfferService } from '../../../core/services/admin/offer.service';
 
 @Component({
   selector: 'app-add-course',
@@ -18,13 +20,17 @@ export class AddCourseComponent implements OnInit, OnDestroy {
   currentStep: number = 1;
   totalSteps: number = 4;
   courseForm!: FormGroup;
+  coupons: ICoupon[] = [];
+  offers: IOffer[] = [];
   private _subscription: Subscription = new Subscription();
 
-  constructor(private _fb: FormBuilder, private _courseService: CourseServiceService) {}
+  constructor(private _fb: FormBuilder, private _courseService: CourseServiceService, private _couponService: CouponService, private _offerService: OfferService) {}
 
   ngOnInit(): void {
     this.initializeForm();
-    this.addModule(); // Add an initial module
+    this.addModule();
+    this.getAllCoupon();
+    this.getAllOffer();
   }
 
   ngOnDestroy(): void {
@@ -32,6 +38,30 @@ export class AddCourseComponent implements OnInit, OnDestroy {
   }
   get coursePreview() {
     return this.courseForm.value;
+  }
+
+  getAllCoupon() {
+    const couponSubscription = this._couponService.getCoupons().subscribe({
+      next: (response) => {
+        this.coupons = response.result;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+    this._subscription.add(couponSubscription);
+  }
+
+  getAllOffer() {
+    const offerSubscription = this._offerService.getOffers().subscribe({
+      next: (response) => {
+        this.offers = response.result;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+    this._subscription.add(offerSubscription);
   }
 
   initializeForm(): void {
@@ -203,13 +233,47 @@ export class AddCourseComponent implements OnInit, OnDestroy {
   }
 
   // Form Submission
+  onFileChange(event: Event, moduleIndex: number, lessonIndex: number): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const lessonControl = this.getLessonsArray(moduleIndex).at(lessonIndex);
+      lessonControl.patchValue({ document: file }); // Store the File object
+      console.log('Selected file:', file.name, file.size, file.type);
+    }
+  }
+
   onSubmit(): void {
     if (this.courseForm.valid) {
       const courseData = this.courseForm.value;
-      console.log('Submitting course data:', courseData);
 
-      const subscription = this._courseService.createCourse(courseData).subscribe({
+      // Prepare FormData for files
+      const filesFormData = new FormData();
+      courseData?.modules.forEach((module: any) => {
+        module?.lessons.forEach((lesson: any) => {
+          if (lesson.document instanceof File) { // Check if it’s a File object
+            filesFormData.append('documents', lesson.document); // Append File object
+            console.log('Appending file:', lesson.document.name, lesson.document.size, lesson.document.type);
+          }
+        });
+      });
+
+      // Combine courseData and files into a single FormData
+      const combinedFormData = new FormData();
+      combinedFormData.append('courseData', JSON.stringify(courseData)); // Send courseData as JSON string
+      for (let [key, value] of (filesFormData as any).entries()) {
+        combinedFormData.append(key, value); // Append files
+      }
+
+      // Debug combined FormData
+      console.log('Combined FormData:');
+      for (let [key, value] of (combinedFormData as any).entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const subscription = this._courseService.createCourse(combinedFormData).subscribe({
         next: (response) => {
+          console.log('signed url', response.signedUrl)
           Swal.fire({
             icon: 'success',
             title: 'Course Created Successfully',
@@ -221,10 +285,9 @@ export class AddCourseComponent implements OnInit, OnDestroy {
             background: 'rgb(8, 10, 24)',
             color: 'white',
           });
-          this.courseForm.reset();
           this.currentStep = 1;
-          this.initializeForm(); // Reinitialize form with empty arrays
-          this.addModule(); // Add initial module after reset
+          this.initializeForm();
+          this.addModule();
         },
         error: (error) => {
           console.error('Error creating course:', error);
