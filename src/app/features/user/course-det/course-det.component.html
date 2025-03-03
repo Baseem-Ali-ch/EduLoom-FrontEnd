@@ -10,7 +10,7 @@
             <div class="bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
                 <div class="flex flex-col md:flex-row gap-6">
                     <!-- Video Player -->
-                    <div class="md:w-2/3">
+                    <!-- <div class="md:w-2/3">
 
                         <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">{{ course.title}}</h1>
                         <h2 class="text-xl font-semibold text-white mb-2" *ngIf="selectedLesson?.title">
@@ -21,15 +21,42 @@
                             <video controls class="w-full rounded-lg" *ngIf="selectedLesson?.document">
                                 <source [src]="selectedLesson.document" type="video/mp4">
                                 Your browser does not support the video tag.
-                              </video>
-                              <div *ngIf="!selectedLesson" class="bg-gray-700 h-64 flex items-center justify-center text-gray-400 rounded-lg">
+                            </video>
+                            <div *ngIf="!selectedLesson"
+                                class="bg-gray-700 h-64 flex items-center justify-center text-gray-400 rounded-lg">
                                 Select a lesson
-                              </div>
-                              <div *ngIf="selectedLesson && !selectedLesson.document" class="bg-gray-700 h-64 flex items-center justify-center text-gray-400 rounded-lg">
+                            </div>
+                            <div *ngIf="selectedLesson && !selectedLesson.document"
+                                class="bg-gray-700 h-64 flex items-center justify-center text-gray-400 rounded-lg">
                                 Loading video...
-                              </div>
+                            </div>
                         </div>
-                    </div>
+                    </div> -->
+
+                    <div class="md:w-2/3">
+                        <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">{{ course.title }}</h1>
+                        <h2 class="text-xl font-semibold text-white mb-2" *ngIf="selectedLesson?.title">
+                          {{ selectedLesson.title }}
+                        </h2>
+                        <div class="aspect-w-16 aspect-h-9">
+                          <!-- Use a key to force video element recreation -->
+                          <video 
+                            controls 
+                            class="w-full rounded-lg" 
+                            *ngIf="selectedLesson?.document" 
+                            [src]="selectedLesson.document" 
+                            type="video/mp4"
+                            [attr.key]="selectedLesson.document">
+                            Your browser does not support the video tag.
+                          </video>
+                          <div *ngIf="!selectedLesson" class="bg-gray-700 h-64 flex items-center justify-center text-gray-400 rounded-lg">
+                            Select a lesson
+                          </div>
+                          <div *ngIf="selectedLesson && !selectedLesson.document" class="bg-gray-700 h-64 flex items-center justify-center text-gray-400 rounded-lg">
+                            No video available
+                          </div>
+                        </div>
+                      </div>
 
                     <!-- Quick Info -->
                     <div class="mt-12 md:w-1/3">
@@ -45,15 +72,15 @@
                                     {{ course.difficultyLevel }}
                                 </span>
                             </div>
-                            <p class="text-white"><span class="font-medium">Price:</span> ${{ course.price.toFixed(2)
+                            <p class="text-white"><span class="font-medium">Price:</span> ₹{{ course.price.toFixed(2)
                                 }}</p>
                             <p class="text-white"><span class="font-medium">Instructor:</span> {{
                                 course.instructorId?.userName || 'Unknown' }}</p>
                             <p class="text-white"><span class="font-medium">Offer:</span> {{
                                 course.offer?.title || 'No' }}</p>
 
-                            <button
-                                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                            <button (click)="openEnrollModal()" *ngIf="!isEnrolled"
+                                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4">
                                 Enroll Now
                             </button>
                         </div>
@@ -74,7 +101,8 @@
                 <!-- Modules -->
                 <div *ngIf="activeTab === 'Modules'" class="space-y-4">
                     <div *ngFor="let module of course.modules; let i = index"
-                        class="bg-gray-700 rounded-lg overflow-hidden">
+                        class="bg-gray-700 rounded-lg overflow-hidden"
+                        [ngClass]="{'opacity-50 pointer-events-none': isContentLocked('Modules', i)}">
                         <!-- Module Header (Clickable to toggle) -->
                         <div class="p-4 cursor-pointer flex justify-between items-center hover:bg-gray-600 transition duration-200"
                             (click)="toggleModule(i)">
@@ -100,9 +128,10 @@
                                         <!-- <a *ngIf="lesson.document" class="mt-1 text-blue-400 text-sm hover:underline">
                                             {{lesson.document}}
                                         </a> -->
-                                        <a *ngIf="lesson.document" target="_blank" class="text-blue-500 hover:underline">
+                                        <a *ngIf="lesson.document" target="_blank" 
+                                            class="text-blue-500 hover:underline">
                                             View Lesson Video
-                                          </a>
+                                        </a>
                                     </div>
                                 </li>
                             </ul>
@@ -112,11 +141,13 @@
 
                 <!-- Assignments -->
                 <div *ngIf="activeTab === 'Assignments'" class="space-y-4">
-                    <div *ngFor="let assignment of course.assignments" class="bg-gray-700 rounded-lg p-4">
+                    <div *ngFor="let assignment of course.assignments" class="bg-gray-700 rounded-lg p-4"
+                        [ngClass]="{'opacity-50 pointer-events-none': isContentLocked('Assignments')}">
                         <h3 class="text-lg font-semibold text-white">{{ assignment.assignmentTitle }}</h3>
                         <p class="text-gray-300 mt-2">{{ assignment.assignmentDescription }}</p>
-                        <button class="mt-2 bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600">
-                            Submit Assignment
+                        <button (click)="openAssignmentModal(assignment._id)"
+                            class="mt-2 bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600">
+                            {{ hasSubmission(assignment._id) ? 'Update' : 'Submit' }}
                         </button>
                     </div>
                     <p *ngIf="!course.assignments?.length" class="text-gray-400">No assignments available yet.</p>
@@ -124,13 +155,15 @@
 
                 <!-- Quizzes -->
                 <div *ngIf="activeTab === 'Quizzes'" class="space-y-4">
-                    <div *ngFor="let quiz of course.quizzes" class="bg-gray-700 rounded-lg p-4">
+                    <div *ngFor="let quiz of course.quizzes" class="bg-gray-700 rounded-lg p-4"
+                        [ngClass]="{'opacity-50 pointer-events-none': isContentLocked('Quizzes')}">
                         <h3 class="text-lg font-semibold text-white">{{ quiz.title }}</h3>
-                        <ul class="mt-2 ml-4 list-disc text-gray-300">
+                        <!-- <ul class="mt-2 ml-4 list-disc text-gray-300">
                             <li *ngFor="let question of quiz.questions">{{ question.questionText }}</li>
-                        </ul>
-                        <button class="mt-2 bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600">
-                            Take Quiz
+                        </ul> -->
+                        <button (click)="openQuizModal(quiz)"
+                            class="mt-2 text-white px-4 py-1 rounded {{ getQuizButtonClass(quiz._id) }}">
+                            {{ getQuizButtonText(quiz._id) }}
                         </button>
                     </div>
                     <p *ngIf="!course.quizzes?.length" class="text-gray-400">No quizzes available yet.</p>
@@ -158,5 +191,133 @@
                 <div class="text-white text-xl">Loading course details...</div>
             </div>
         </ng-template>
+
+
+
+
+
+        <!-- Modal -->
+        <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+                <h3 class="text-xl font-semibold text-white mb-4">
+                    {{ hasSubmission(selectedAssignmentId!) ? 'Update Assignment' : 'Submit Assignment' }}
+                </h3>
+                <form [formGroup]="assignmentForm" (ngSubmit)="submitOrUpdateAssignment()">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-white mb-2">Assignment Link</label>
+                        <input type="url" formControlName="link"
+                            class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="https://example.com/assignment">
+                        <div *ngIf="assignmentForm.get('link')?.touched && assignmentForm.get('link')?.invalid"
+                            class="text-red-500 text-sm mt-1">
+                            Please enter a valid URL (e.g., https://example.com)
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" (click)="closeModal()"
+                            class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                            Cancel
+                        </button>
+                        <button type="submit" [disabled]="assignmentForm.invalid"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                            {{ hasSubmission(selectedAssignmentId!) ? 'Update' : 'Submit' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Quiz Modal -->
+        <div *ngIf="showQuizModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-gray-800 p-6 rounded-lg w-full max-w-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-white">
+                        Question {{ currentQuestionIndex + 1 }} of {{ selectedQuiz?.questions.length }}
+                    </h3>
+                    <!-- <div class="text-white text-sm">
+                        Correct: {{ quizResults.correct }} | Wrong: {{ quizResults.wrong }} | Skipped: {{
+                        quizResults.skipped }}
+                    </div> -->
+                </div>
+
+                <div *ngIf="getCurrentQuestion()" class="mb-6">
+                    <p class="text-gray-200 mb-4">{{ getCurrentQuestion().questionText }}</p>
+                    <div class="space-y-2">
+                        <label *ngFor="let option of getCurrentQuestion().options" class="flex items-center space-x-2">
+                            <input type="radio" [name]="'question-' + getCurrentQuestion()._id"
+                                [value]="option.optionText"
+                                [checked]="answers[getCurrentQuestion()._id] === option.optionText"
+                                (change)="selectAnswer(getCurrentQuestion()._id, option.optionText)"
+                                class="text-blue-500">
+                            <span class="text-gray-300">{{ option.optionText }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex justify-between">
+                    <button (click)="previousQuestion()" [disabled]="currentQuestionIndex === 0"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                        Previous
+                    </button>
+                    <button (click)="skipQuestion()"
+                        [disabled]="currentQuestionIndex === selectedQuiz?.questions.length - 1"
+                        class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
+                        Skip
+                    </button>
+                    <button (click)="nextQuestion()"
+                        [disabled]="currentQuestionIndex === selectedQuiz?.questions.length - 1"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        Next
+                    </button>
+                    <button (click)="submitQuiz()"
+                        class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                        Submit Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Enrollment Modal -->
+        <div *ngIf="showEnrollModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+                <h3 class="text-xl font-semibold text-white mb-4">Enroll in {{ course?.title }}</h3>
+                <p class="text-gray-300 mb-4">Original Price: ₹{{ course?.price }}</p>
+                <p class="text-gray-300 mb-4">Discounted Price: ₹{{ discountedAmount }}</p>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-white mb-2">Select Coupon</label>
+                    <select [(ngModel)]="selectedCoupon" (change)="applyCouponOrOffer()"
+                        class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md">
+                        <option value="">No Coupon</option>
+                        <option *ngFor="let coupon of coupons" [value]="coupon._id">{{ coupon.couponCode }} ({{
+                            coupon.discount }} %)</option>
+                    </select>
+                </div>
+
+                <!-- <div class="mb-4">
+        <label class="block text-sm font-medium text-white mb-2">Select Offer</label>
+        <select 
+          [(ngModel)]="selectedOffer" 
+          (change)="applyCouponOrOffer()"
+          class="w-full px-3 py-2 bg-gray-900 text-gray-300 border border-gray-600 rounded-md">
+          <option value="">No Offer</option>
+          <option *ngFor="let offer of offers" [value]="offer._id">{{ offer.title }} (₹{{ offer.discount }})</option>
+        </select>
+      </div> -->
+
+                <button (click)="initiatePayment()"
+                    class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Pay with Razorpay
+                </button>
+                <button (click)="closeEnrollModal()"
+                    class="w-full mt-2 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+                    Cancel
+                </button>
+            </div>
+        </div>
     </section>
 </div>

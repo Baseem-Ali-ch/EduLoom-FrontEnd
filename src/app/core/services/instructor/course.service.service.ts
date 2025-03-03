@@ -24,7 +24,39 @@ export class CourseServiceService {
     return this._http.get<ICourse[]>(`${this._apiUrl}/instructor/get-courses`);
   }
 
+  updateCourse(courseId: string, formData: FormData): Observable<any> {
+    return this._http.put(`${this._apiUrl}/instructor/update-course/${courseId}`, formData);
+  }
+
   getDocSignedUrl(courseId: string): Observable<any> {
     return this._http.get(`${this._apiUrl}/instructor/get-doc`, { params: { courseId } });
+  }
+
+  submitAssignment(courseId: string, assignmentId: string, link: string): Observable<any> {
+    return this._http.post(`${this._apiUrl}/student/submit-assignment`, { courseId, assignmentId, link });
+  }
+
+  getStudentSubmissions(courseId: string): Observable<any> {
+    return this._http.get(`${this._apiUrl}/student/submissions/${courseId}`);
+  }
+
+  submitQuiz(courseId: string, quizId: string, answers: { [questionId: string]: string }): Observable<any> {
+    return this._http.post(`${this._apiUrl}/student/submit-quiz`, { courseId, quizId, answers });
+  }
+
+  checkEnrollment(courseId: string): Observable<any> {
+    return this._http.get(`${this._apiUrl}/student/enrollment/${courseId}`, { withCredentials: true });
+  }
+
+  getCouponsAndOffers(): Observable<any> {
+    return this._http.get(`${this._apiUrl}/student/coupons`);
+  }
+
+  createRazorpayOrder(courseId: string, amount: number): Observable<any> {
+    return this._http.post(`${this._apiUrl}/student/enroll`, { courseId, amount });
+  }
+
+  verifyPayment(paymentData: any): Observable<any> {
+    return this._http.post(`${this._apiUrl}/student/verify-payment`, paymentData);
   }
 }

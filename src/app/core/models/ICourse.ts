@@ -31,6 +31,7 @@ export interface Module {
 }
 
 export interface Assignment {
+  _id: string;
   assignmentTitle: string;
   assignmentDescription: string;
 }
@@ -46,6 +47,7 @@ export interface QuizQuestion {
 }
 
 export interface Quiz {
+  _id: string;
   title: string;
   questions: QuizQuestion[];
 }

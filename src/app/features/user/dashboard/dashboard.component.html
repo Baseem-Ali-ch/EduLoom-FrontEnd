@@ -20,8 +20,8 @@
             </h1>
         </div>
 
-         <!-- Courses Grid -->
-         <div class="container mx-auto mt-6 px-4">
+        <!-- Courses Grid -->
+        <div class="container mx-auto mt-6 px-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div *ngFor="let course of allCourses"
                     class="border border-gray-300 rounded-xl shadow-lg overflow-hidden bg-gray-800 transform transition duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -47,12 +47,12 @@
                             </p>
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-xl font-semibold text-blue-300">
-                                    ${{ course.price.toFixed(2) || 'Price not available' }}
+                                    ₹{{ course.price.toFixed(2) || 'Price not available' }}
                                 </span>
                             </div>
-                            <button
+                            <button [routerLink]="'/student/course/' + course._id"
                                 class="bg-blue-600 text-white w-full py-2.5 rounded-lg text-base font-medium hover:bg-blue-700 transition duration-200">
-                                Enroll 
+                                View More
                             </button>
                         </div>
                     </div>

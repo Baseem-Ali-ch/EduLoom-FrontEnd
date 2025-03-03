@@ -11,6 +11,7 @@ import { ForgetPasswordComponentIns } from './features/instructor/forget-passwor
 import { ResetPasswordComponentIns } from './features/instructor/reset-password/reset-password.component';
 import { insAuthGuard } from './core/guards/ins-auth.guard';
 import { admAuthGuard } from './core/guards/adm-auth.guard';
+import { AddCourseComponent } from './features/instructor/add-course/add-course.component';
 
 export const routes: Routes = [
   // student routes
@@ -65,6 +66,7 @@ export const routes: Routes = [
       { path: 'courses', loadComponent: () => import('./features/instructor/course/course.component').then((c) => c.CourseComponent), canActivate: [insAuthGuard] },
       { path: 'add-course', loadComponent: () => import('./features/instructor/add-course/add-course.component').then((c) => c.AddCourseComponent), canActivate: [insAuthGuard] },
       { path: 'course/:id', loadComponent: () => import('./features/instructor/course-det/course-det.component').then((c) => c.CourseDetComponent), canActivate: [insAuthGuard] },
+      { path: 'courses/:courseId', component: AddCourseComponent },
     ],
   },
 

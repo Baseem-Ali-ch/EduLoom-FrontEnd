@@ -61,8 +61,8 @@
                                     ${{ course.price.toFixed(2) || 'Price not available' }}
                                 </span>
                             </div>
-                            <button
-                                class="bg-blue-600 text-white w-full py-2.5 rounded-lg text-base font-medium hover:bg-blue-700 transition duration-200">
+                            <button (click)="editCourse(course._id)"
+                                class="bg-blue-600 text-white w-full py-2.5 rounded-lg text-base font-medium hover:bg-blue-700 transition duration-200 mt-4">
                                 Edit
                             </button>
                         </div>

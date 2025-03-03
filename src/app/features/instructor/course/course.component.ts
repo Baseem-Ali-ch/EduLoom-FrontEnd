@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InstructorSidebarComponent } from '../../../shared/components/instructor-sidebar/instructor-sidebar.component';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CourseServiceService } from '../../../core/services/instructor/course.service.service';
 import { Subscription } from 'rxjs';
 import { ICourse } from '../../../core/models/ICourse';
@@ -17,7 +17,7 @@ export class CourseComponent implements OnInit, OnDestroy {
   allCourses: ICourse[] = [];
 
   private _subscription: Subscription = new Subscription();
-  constructor(private _courseService: CourseServiceService) {}
+  constructor(private _courseService: CourseServiceService, private _router: Router) {}
 
   ngOnInit(): void {
     this.getCourse();
@@ -33,6 +33,10 @@ export class CourseComponent implements OnInit, OnDestroy {
       },
     });
     this._subscription.add(couponSubscription);
+  }
+
+  editCourse(courseId: string | undefined): void {
+    this._router.navigate(['/instructor/courses', courseId]); // Navigate to edit route
   }
 
   ngOnDestroy(): void {
