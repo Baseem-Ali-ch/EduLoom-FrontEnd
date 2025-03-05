@@ -7,10 +7,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { response } from 'express';
 import Swal from 'sweetalert2';
+import { TableComponent } from '../../../shared/components/table/table.component';
 
 @Component({
   selector: 'app-offer-manage',
-  imports: [AdminSidebarComponent, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [AdminSidebarComponent, CommonModule, FormsModule, ReactiveFormsModule, TableComponent],
   templateUrl: './offer-manage.component.html',
   styleUrl: './offer-manage.component.css',
 })
@@ -21,11 +22,22 @@ export class OfferManageComponent {
   selectedStatus: string = 'all';
   isVisibleForm: boolean = false;
   offerForm!: FormGroup;
+  currentPage: number = 1;
+  totalPages: number = 1;
+  limit: number = 10;
   private _subscription: Subscription = new Subscription();
+
+  // Column configuration for the generic table
+  tableColumns = [
+    { key: 'title', label: 'Title' },
+    { key: 'description', label: 'Description' },
+    { key: 'discount', label: 'Discount' },
+    { key: 'isActive', label: 'Status' },
+    { key: 'actions', label: 'Actions', isAction: true }
+  ];
 
   constructor(private _offerService: OfferService, private _fb: FormBuilder) {}
 
-  // ng on init
   ngOnInit(): void {
     this.getAllOffer();
     this.form();
@@ -48,7 +60,7 @@ export class OfferManageComponent {
     const formSubmit = this._offerService.addOffer(this.offerForm.value).subscribe({
       next: (response) => {
         const newOffer: IOffer = response.result;
-
+        this.allOffers.unshift(newOffer); // Add to allOffers too for consistency
         this.filteredOffers.unshift(newOffer);
         Swal.fire({
           icon: 'success',
@@ -62,7 +74,7 @@ export class OfferManageComponent {
           color: 'white',
         });
         this.offerForm.reset();
-        this._subscription.add(formSubmit);
+        this.isVisibleForm = false;
       },
       error: (error) => {
         Swal.fire({
@@ -77,54 +89,77 @@ export class OfferManageComponent {
           color: 'white',
         });
       },
+      complete: () => this._subscription.add(formSubmit)
     });
-    this.isVisibleForm = !this.isVisibleForm;
   }
 
-  // fetch all user
   getAllOffer() {
     const offerSubscription = this._offerService.getOffers().subscribe({
       next: (response) => {
-        console.log('offers', response.result);
         this.allOffers = response.result;
-        this.filteredOffers = response.result;
+        this.filterOffer(); // Apply filters after fetching
       },
-      error: (error) => {
-        console.error(error);
-      },
+      error: (error) => console.error(error)
     });
     this._subscription.add(offerSubscription);
   }
 
-  // update instructor status
   updateStatus(offerId: string, status: boolean) {
     const updateStatusSubscription = this._offerService.updateOfferStatus(offerId, status).subscribe({
       next: (response) => {
-        const offer = this.allOffers.find((i) => i._id === offerId);
+        const offer = this.allOffers.find((o) => o._id === offerId);
         if (offer) {
           offer.isActive = status;
+          this.filterOffer(); 
         }
         console.log(response);
       },
-      error: (error) => {
-        console.error(error);
-      },
+      error: (error) => console.error(error)
     });
     this._subscription.add(updateStatusSubscription);
   }
 
-  // filter
   filterOffer() {
     this.filteredOffers = this.allOffers.filter((offer) => {
-      const matchesSearch = !this.searchTerm || offer.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || offer.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesSearch =
+        !this.searchTerm ||
+        offer.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        offer.description.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-      const matchesStatus = this.selectedStatus === 'all' || (this.selectedStatus === 'active' && offer.isActive) || (this.selectedStatus === 'inactive' && !offer.isActive);
+      const matchesStatus =
+        this.selectedStatus === 'all' ||
+        (this.selectedStatus === 'active' && offer.isActive) ||
+        (this.selectedStatus === 'inactive' && !offer.isActive);
 
       return matchesSearch && matchesStatus;
     });
+    this.totalPages = Math.ceil(this.filteredOffers.length / this.limit);
   }
 
-  // ng on destroy
+  // Handle page changes from the table
+  onPageChange(page: number) {
+    this.currentPage = page;
+    // If your API supports pagination, fetch new data here
+    // For now, we'll rely on client-side pagination
+  }
+
+  // Handle actions from the table
+  onActionClicked(event: { item: IOffer; action: string }) {
+    const { item, action } = event;
+    switch (action) {
+      case 'suspend':
+      case 'activate':
+        this.updateStatus(item._id!, action === 'activate');
+        break;
+      case 'delete':
+        console.log('Delete offer:', item); // Implement delete logic
+        break;
+      case 'edit':
+        console.log('Edit offer:', item); // Implement edit logic
+        break;
+    }
+  }
+
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
   }

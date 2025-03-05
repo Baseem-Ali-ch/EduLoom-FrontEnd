@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy{
      this.getCourse();
    }
  
+   // list all courses in dashboard
    getCourse() {
      const couponSubscription = this._courseService.getCourses().subscribe({
        next: (response) => {

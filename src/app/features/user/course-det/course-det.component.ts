@@ -19,17 +19,21 @@ export class CourseDetComponent implements OnInit, OnDestroy {
   courseId: string | null = '';
   allCourses: ICourse[] = [];
   course!: ICourse | null;
+
   selectedLesson: any = null;
   selectedDoc: any = null;
+
   activeTab: string = 'Modules';
   tabs: string[] = ['Modules', 'Assignments', 'Quizzes', 'Live Classes'];
   isLoading = true;
   expandedModules: boolean[] = [];
   documents: { [key: string]: string } = {};
+
   showModal: boolean = false;
   assignmentForm!: FormGroup;
   selectedAssignmentId: string | null = null;
   submissions: { [assignmentId: string]: string } = {};
+
   showQuizModal: boolean = false;
   selectedQuiz: any = null;
   currentQuestionIndex: number = 0;
@@ -37,6 +41,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
   quizResults: { correct: number; wrong: number; skipped: number } = { correct: 0, wrong: 0, skipped: 0 };
   totalMark: number = 0;
   previouseQuizMark: number = 0;
+
   isEnrolled: boolean = false;
   coupons: any[] = [];
   offers: any[] = [];
@@ -46,7 +51,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
   showEnrollModal: boolean = false;
   private _subscription: Subscription = new Subscription();
 
-  constructor(private _route: ActivatedRoute, private _courseService: CourseServiceService, private _fb: FormBuilder,  private _cdr: ChangeDetectorRef) {}
+  constructor(private _route: ActivatedRoute, private _courseService: CourseServiceService, private _fb: FormBuilder, private _cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.courseId = this._route.snapshot.paramMap.get('id');
@@ -57,12 +62,14 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this.checkEnrollmentStatus(this.courseId as string);
   }
 
+  // assignment validation form
   assingmentForm() {
     this.assignmentForm = this._fb.group({
       link: ['', [Validators.required, Validators.pattern('https?://.+')]],
     });
   }
 
+  // find assignment submission
   loadSubmissions(courseId: string): void {
     this._subscription.add(
       this._courseService.getStudentSubmissions(courseId).subscribe({
@@ -77,6 +84,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     );
   }
 
+  // open assignment modal
   openAssignmentModal(assignmentId: string): void {
     this.selectedAssignmentId = assignmentId;
     this.showModal = true;
@@ -84,12 +92,14 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this.assignmentForm.patchValue({ link: existingLink || '' });
   }
 
+  // close assignment modal
   closeModal(): void {
     this.showModal = false;
     this.selectedAssignmentId = null;
     this.assignmentForm.reset();
   }
 
+  // handle submit or update assignment
   submitOrUpdateAssignment(): void {
     if (this.assignmentForm.valid && this.selectedAssignmentId) {
       const link = this.assignmentForm.value.link;
@@ -138,6 +148,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     return !!this.submissions[assignmentId];
   }
 
+  // get course
   getCourse() {
     const courseSubscription = this._courseService.getCourses().subscribe({
       next: (response) => {
@@ -155,6 +166,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this._subscription.add(courseSubscription);
   }
 
+  // get files signed url
   getDocumentSignedUrl(): void {
     const courseId = this._route.snapshot.paramMap.get('id') || '';
     if (courseId) {
@@ -177,22 +189,22 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     }
   }
 
+  // lesson selection for playin video
   selectLesson(lesson: any): void {
-    // Reset to force re-render
     this.selectedLesson = null;
     setTimeout(() => {
       this.selectedLesson = lesson;
       console.log('Selected lesson:', lesson.document);
-      this._cdr.detectChanges(); // Force change detection
-    }, 0); // Zero timeout ensures DOM update
+      this._cdr.detectChanges();
+    }, 0);
   }
 
- 
-
+  // expand module
   toggleModule(index: number): void {
     this.expandedModules[index] = !this.expandedModules[index];
   }
 
+  // open quiz modal
   openQuizModal(quiz: any): void {
     this.selectedQuiz = quiz;
     this.showQuizModal = true;
@@ -201,27 +213,32 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this.quizResults = { correct: 0, wrong: 0, skipped: 0 };
   }
 
+  // close quiz modal
   closeQuizModal(): void {
     this.showQuizModal = false;
     this.selectedQuiz = null;
   }
 
+  // answer selection for quiz
   selectAnswer(questionId: string, optionText: string): void {
     this.answers[questionId] = optionText;
   }
 
+  // next question handle
   nextQuestion(): void {
     if (this.currentQuestionIndex < this.selectedQuiz.questions.length - 1) {
       this.currentQuestionIndex++;
     }
   }
 
+  // previous question handle
   previousQuestion(): void {
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
     }
   }
 
+  // skip question handle
   skipQuestion(): void {
     const questionId = this.selectedQuiz.questions[this.currentQuestionIndex]._id;
     if (!this.answers[questionId]) {
@@ -230,6 +247,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this.nextQuestion();
   }
 
+  // quiz submission
   submitQuiz(): void {
     const courseId = this.course?._id as string;
     const quizId = this.selectedQuiz._id;
@@ -291,6 +309,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this.closeQuizModal();
   }
 
+  // change the quiz button text based on the score
   getQuizButtonText(quizId: string): string {
     if (!this.isEnrolled) return 'Take Quiz';
     const storedResult = localStorage.getItem(`quiz_${quizId}`);
@@ -301,6 +320,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     return 'Take Quiz';
   }
 
+  // change the quiz button style based on the score
   getQuizButtonClass(quizId: string): string {
     if (!this.isEnrolled) return 'bg-blue-500 hover:bg-blue-600';
     const storedResult = localStorage.getItem(`quiz_${quizId}`);
@@ -311,10 +331,12 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     return 'bg-blue-500 hover:bg-blue-600';
   }
 
+  // get currect question for quiz
   getCurrentQuestion() {
     return this.selectedQuiz?.questions[this.currentQuestionIndex];
   }
 
+  // verify the student enrollement
   checkEnrollmentStatus(courseId: string): void {
     this._subscription.add(
       this._courseService.checkEnrollment(courseId).subscribe({
@@ -326,6 +348,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     );
   }
 
+  // load coupons and offers
   loadCouponsAndOffers(): void {
     this._subscription.add(
       this._courseService.getCouponsAndOffers().subscribe({
@@ -337,6 +360,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     );
   }
 
+  // open enroll modal
   openEnrollModal(): void {
     this.showEnrollModal = true;
     this.loadCouponsAndOffers();
@@ -345,10 +369,12 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this.discountedAmount = this.course?.price as number;
   }
 
+  // close enroll modal
   closeEnrollModal(): void {
     this.showEnrollModal = false;
   }
 
+  // apply coupon
   applyCouponOrOffer(): void {
     let discount = 0;
     const originalAmount = this.course?.price as number;
@@ -366,6 +392,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     this.discountedAmount = Math.max(0, originalAmount - discount);
   }
 
+  // handle the payment
   async initiatePayment(): Promise<void> {
     const courseId = this.course?._id as string;
     const amount = this.discountedAmount * 100; // Razorpay uses paise
@@ -417,6 +444,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     };
   }
 
+  // verify the payement
   verifyPayment(paymentResponse: any, courseId: string): void {
     this._subscription.add(
       this._courseService
@@ -474,6 +502,7 @@ export class CourseDetComponent implements OnInit, OnDestroy {
     );
   }
 
+  // lock the content based on the enroll
   isContentLocked(tab: string, index?: number): boolean {
     if (this.isEnrolled) return false;
     if (tab === 'Modules' && index === 0) return false;

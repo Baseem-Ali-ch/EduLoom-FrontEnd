@@ -36,7 +36,7 @@ export class CourseComponent implements OnInit, OnDestroy {
   }
 
   editCourse(courseId: string | undefined): void {
-    this._router.navigate(['/instructor/courses', courseId]); // Navigate to edit route
+    this._router.navigate(['/instructor/courses', courseId]);
   }
 
   ngOnDestroy(): void {

@@ -5,24 +5,33 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { IUser } from '../../../core/models/IUser';
+import { TableComponent } from '../../../shared/components/table/table.component';
 
 @Component({
     selector: 'app-user-manage',
     standalone: true,
-    imports: [AdminSidebarComponent, CommonModule, FormsModule],
+    imports: [AdminSidebarComponent, CommonModule, FormsModule, TableComponent],
     templateUrl: './user-manage.component.html',
     styleUrl: './user-manage.component.css'
 })
 export class UserManageComponent implements OnInit, OnDestroy {
   allUsers: IUser[] = [];
   filteredUsers: IUser[] = [];
-  displayedUsers: IUser[] = [];
   searchTerm: string = '';
   selectedStatus: string = 'all';
   currentPage: number = 1;
   totalPages: number = 1;
   limit: number = 10;
   private _subscription: Subscription = new Subscription();
+
+  // Column configuration for the generic table
+  tableColumns = [
+    { key: 'userName', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'phone', label: 'Phone' },
+    { key: 'isActive', label: 'Status' },
+    { key: 'actions', label: 'Actions', isAction: true }
+  ];
 
   constructor(private _userService: UsersService) {}
 
@@ -34,55 +43,57 @@ export class UserManageComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
-  // Fetch all users from the backend
   getAllUser() {
     const allUserSubscription = this._userService.getUser(this.currentPage, this.limit).subscribe({
       next: (response) => {
         this.allUsers = response.users;
         this.totalPages = response.totalPages;
-        this.filterUsers(); // Apply filters after fetching users
+        this.filterUsers();
       },
-      error: (error) => {
-        console.error(error);
-      },
+      error: (error) => console.error(error)
     });
     this._subscription.add(allUserSubscription);
   }
 
-  // Filter users based on search term and status
   filterUsers() {
     this.filteredUsers = this.allUsers.filter((user) => {
-      const matchesSearch = !this.searchTerm || user.userName.toLowerCase().includes(this.searchTerm.toLowerCase()) || user.email.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesSearch =
+        !this.searchTerm ||
+        user.userName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-      const matchesStatus = this.selectedStatus === 'all' || (this.selectedStatus === 'active' && user.isActive) || (this.selectedStatus === 'inactive' && !user.isActive);
+      const matchesStatus =
+        this.selectedStatus === 'all' ||
+        (this.selectedStatus === 'active' && user.isActive) ||
+        (this.selectedStatus === 'inactive' && !user.isActive);
 
       return matchesSearch && matchesStatus;
     });
-
-    this.totalPages = Math.ceil(this.filteredUsers.length / this.limit); // Update total pages
-    this.updateDisplayedUsers(); // Update displayed users for the current page
+    this.totalPages = Math.ceil(this.filteredUsers.length / this.limit);
   }
 
-  // Update displayed users for the current page
-  updateDisplayedUsers() {
-    const startIndex = (this.currentPage - 1) * this.limit;
-    const endIndex = startIndex + this.limit;
-    this.displayedUsers = this.filteredUsers.slice(startIndex, endIndex);
+  // Handle page changes from the table
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.getAllUser(); 
   }
 
-  // Navigate to a specific page
-  goToPage(page: number) {
-    console.log('page', page);
-
-    if (page > 0 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.updateDisplayedUsers(); // Update displayed users for the new page
+  // Handle actions from the table
+  onActionClicked(event: { item: IUser; action: string }) {
+    const { item, action } = event;
+    switch (action) {
+      case 'suspend':
+      case 'activate':
+        this.updateStatus(item._id!, action === 'activate');
+        break;
+      case 'edit':
+        console.log('Edit user:', item); 
+        break;
     }
   }
 
-  // Update user status
   updateStatus(userId: string, status: boolean) {
-    const updateStatusSubription = this._userService.updateUserStatus(userId, status).subscribe({
+    const updateStatusSubscription = this._userService.updateUserStatus(userId, status).subscribe({
       next: (response) => {
         const user = this.allUsers.find((u) => u._id === userId);
         if (user) {
@@ -91,10 +102,8 @@ export class UserManageComponent implements OnInit, OnDestroy {
         }
         console.log(response);
       },
-      error: (error) => {
-        console.error(error);
-      },
+      error: (error) => console.error(error)
     });
-    this._subscription.add(updateStatusSubription);
+    this._subscription.add(updateStatusSubscription);
   }
 }

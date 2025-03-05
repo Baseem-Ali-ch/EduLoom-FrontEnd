@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { CouponService } from '../../../core/services/admin/coupon.service';
+import { TableComponent } from '../../../shared/components/table/table.component';
 
 @Component({
   selector: 'app-coupon-manage',
-  imports: [AdminSidebarComponent, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [AdminSidebarComponent, CommonModule, FormsModule, ReactiveFormsModule, TableComponent],
   templateUrl: './coupon-manage.component.html',
   styleUrl: './coupon-manage.component.css',
 })
@@ -20,11 +21,24 @@ export class CouponManageComponent {
   selectedStatus: string = 'all';
   isVisibleForm: boolean = false;
   couponForm!: FormGroup;
+  currentPage: number = 1;
+  totalPages: number = 1;
+  limit: number = 10;
   private _subscription: Subscription = new Subscription();
+
+  tableColumns = [
+    { key: 'couponCode', label: 'Coupon Code' },
+    { key: 'discount', label: 'Discount' },
+    { key: 'minPurAmt', label: 'Min Purchase Amount' },
+    { key: 'description', label: 'Description' },
+    { key: 'expDate', label: 'Expiry Date' },
+    { key: 'maxPurAmt', label: 'Max Purchase Amount' },
+    { key: 'isActive', label: 'Status' },
+    { key: 'actions', label: 'Actions', isAction: true },
+  ];
 
   constructor(private _couponService: CouponService, private _fb: FormBuilder) {}
 
-  // ng on init
   ngOnInit(): void {
     this.getAllCoupon();
     this.form();
@@ -55,6 +69,7 @@ export class CouponManageComponent {
     const formSubmit = this._couponService.addCoupon(this.couponForm.value).subscribe({
       next: (response) => {
         const newCoupon: ICoupon = response.result;
+        this.allCoupon.unshift(newCoupon);
         this.filteredCoupon.unshift(newCoupon);
         Swal.fire({
           icon: 'success',
@@ -68,7 +83,7 @@ export class CouponManageComponent {
           color: 'white',
         });
         this.couponForm.reset();
-        this._subscription.add(formSubmit);
+        this.isVisibleForm = false;
       },
       error: (error) => {
         Swal.fire({
@@ -83,54 +98,64 @@ export class CouponManageComponent {
           color: 'white',
         });
       },
+      complete: () => this._subscription.add(formSubmit),
     });
-    this.isVisibleForm = !this.isVisibleForm;
   }
 
-  // fetch all user
   getAllCoupon() {
     const couponSubscription = this._couponService.getCoupons().subscribe({
       next: (response) => {
         this.allCoupon = response.result;
-        this.filteredCoupon = response.result;
-        console.log('all cou', response.result);
+        this.filterCoupon();
       },
-      error: (error) => {
-        console.error(error);
-      },
+      error: (error) => console.error(error),
     });
     this._subscription.add(couponSubscription);
   }
 
-  // update instructor status
   updateStatus(couponId: string, status: boolean) {
     const updateStatusSubscription = this._couponService.updateCouponStatus(couponId, status).subscribe({
       next: (response) => {
-        const coupon = this.allCoupon.find((i) => i._id === couponId);
+        const coupon = this.allCoupon.find((c) => c._id === couponId);
         if (coupon) {
-          coupon.status = status;
+          coupon.isActive = status;
+          this.filterCoupon();
         }
         console.log(response);
       },
-      error: (error) => {
-        console.error(error);
-      },
+      error: (error) => console.error(error),
     });
     this._subscription.add(updateStatusSubscription);
   }
 
-  // filter
   filterCoupon() {
     this.filteredCoupon = this.allCoupon.filter((coupon) => {
       const matchesSearch = !this.searchTerm || coupon.couponCode.toLowerCase().includes(this.searchTerm.toLowerCase()) || coupon.description.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-      const matchesStatus = this.selectedStatus === 'all' || (this.selectedStatus === 'active' && coupon.status) || (this.selectedStatus === 'inactive' && !coupon.status);
+      const matchesStatus = this.selectedStatus === 'all' || (this.selectedStatus === 'active' && coupon.isActive) || (this.selectedStatus === 'inactive' && !coupon.isActive);
 
       return matchesSearch && matchesStatus;
     });
+    this.totalPages = Math.ceil(this.filteredCoupon.length / this.limit);
   }
 
-  // ng on destroy
+  onPageChange(page: number) {
+    this.currentPage = page;
+  }
+
+  onActionClicked(event: { item: ICoupon; action: string }) {
+    const { item, action } = event;
+    switch (action) {
+      case 'suspend':
+      case 'activate':
+        this.updateStatus(item._id!, action === 'activate');
+        break;
+      case 'edit':
+        console.log('Edit coupon:', item);
+        break;
+    }
+  }
+
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
   }

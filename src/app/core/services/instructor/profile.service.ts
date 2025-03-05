@@ -9,8 +9,8 @@ import { environment } from '../../../../environments/environment';
 })
 export class ProfileService {
   private _apiUrl = environment.apiUrl;
-  private _photoUrlSubject = new BehaviorSubject<string | null>(null)
-    profilePhoto$ = this._photoUrlSubject.asObservable()
+  private _photoUrlSubject = new BehaviorSubject<string | null>(null);
+  profilePhoto$ = this._photoUrlSubject.asObservable();
 
   constructor(private _http: HttpClient) {}
 
@@ -53,5 +53,9 @@ export class ProfileService {
   // change password
   changePassword(passwordData: any): Observable<any> {
     return this._http.post(`${this._apiUrl}/instructor/change-password`, passwordData, {});
+  }
+
+  logout(): Observable<any> {
+    return this._http.post(`${this._apiUrl}/student/logout`, {});
   }
 }

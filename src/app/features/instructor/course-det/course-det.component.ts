@@ -58,7 +58,6 @@ export class CourseDetComponent implements OnInit, OnDestroy {
           this.documents = response.result;
           console.log('Signed URLs:', this.documents);
 
-          // Optional: Integrate signed URLs into course lessons
           this.course?.modules.forEach((module: any) => {
             module.lessons.forEach((lesson: any) => {
               if (lesson.document && this.documents[lesson.document]) {

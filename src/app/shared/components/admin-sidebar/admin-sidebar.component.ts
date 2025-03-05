@@ -65,34 +65,47 @@ export class AdminSidebarComponent implements OnInit, OnDestroy{
 
   // logout
   onLogout() {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('token');
-    this._router.navigate(['/admin/login']);
-    if (!localStorage.getItem('isLoggedIn')) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Logout Successfull!',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        background: 'rgb(8, 10, 24)',
-        color: 'white',
-      });
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Logout Failed!',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        background: 'rgb(8, 10, 24)',
-        color: 'white',
-      });
-    }
+    this._subscription = this._profileService.logout().subscribe({
+      next: () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh-token');
+
+        this._router.navigate(['/student/login']).then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Logout Successful!',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        });
+      },
+      error: (error) => {
+        console.error('Logout failed', error);
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh-token');
+
+        this._router.navigate(['/admin/login']).then(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Logout Failed!',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: 'rgb(8, 10, 24)',
+            color: 'white',
+          });
+        });
+      },
+    });
   }
 
   ngOnDestroy(): void {
